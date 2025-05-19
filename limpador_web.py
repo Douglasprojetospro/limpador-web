@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, send_file
 import pandas as pd
 import re
@@ -10,7 +9,7 @@ app = Flask(__name__)
 def remover_acentos(texto):
     texto = unicodedata.normalize('NFKD', texto)
     texto = ''.join(c for c in texto if not unicodedata.combining(c))
-    texto = texto.replace('ç', 'c').replace('Ç', 'C')
+    texto = texto.replace('ç', 'c').replace('Ç', 'C')
     return texto
 
 def separar_num_letra(texto):
@@ -30,7 +29,10 @@ def limpar_dataframe(df, converter_minusculo=True, remover_especiais=True, carac
                 df_limpo[col] = df_limpo[col].str.lower()
             if remover_especiais:
                 df_limpo[col] = df_limpo[col].apply(remover_acentos)
-                df_limpo[col] = df_limpo[col].apply(lambda x: re.sub(caracteres_regex, ' ', x))
+                try:
+                    df_limpo[col] = df_limpo[col].apply(lambda x: re.sub(caracteres_regex, ' ', x))
+                except re.error as e:
+                    raise ValueError(f"Expressão regular inválida: {caracteres_regex} - Erro: {str(e)}")
             df_limpo[col] = df_limpo[col].apply(separar_num_letra)
             df_limpo[col] = df_limpo[col].str.replace(r'\s+', ' ', regex=True).str.strip()
     return df_limpo
@@ -38,6 +40,7 @@ def limpar_dataframe(df, converter_minusculo=True, remover_especiais=True, carac
 @app.route("/", methods=["GET", "POST"])
 def index():
     preview = None
+    erro = None
     if request.method == "POST":
         file = request.files.get("file")
         converter_minusculo = request.form.get("minusculo") == "on"
@@ -54,10 +57,12 @@ def index():
                 df_processado.to_excel(buffer, index=False)
                 buffer.seek(0)
                 return send_file(buffer, as_attachment=True, download_name="dados_processados.xlsx", mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            except ValueError as e:
+                erro = str(e)
             except Exception as e:
-                return f"Erro ao processar: {str(e)}", 500
+                erro = f"Erro ao processar: {str(e)}"
 
-    return render_template("index.html", preview=preview)
+    return render_template("index.html", preview=preview, erro=erro)
 
 if __name__ == "__main__":
     app.run(debug=True)
