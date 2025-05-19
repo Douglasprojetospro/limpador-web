@@ -9,7 +9,7 @@ app = Flask(__name__)
 def remover_acentos(texto):
     texto = unicodedata.normalize('NFKD', texto)
     texto = ''.join(c for c in texto if not unicodedata.combining(c))
-    texto = texto.replace('ç', 'c').replace('Ç', 'C')
+    texto = texto.replace('ç', 'c').replace('Ç', 'C')
     return texto
 
 def separar_num_letra(texto):
@@ -20,7 +20,12 @@ def separar_num_letra(texto):
 def limpar_dataframe(df, converter_minusculo=True, remover_especiais=True, caracteres_regex=None):
     df_limpo = df.copy()
     if not caracteres_regex:
-        caracteres_regex = r'[.,;:!?@#$%^&*_+=|\\/<>\[\]{}()\-"\'\`~]'
+        caracteres_regex = r'[.,;:!?@#$%^&*_+=|\\/<>\\\[\]{}()\-"\'`~]'
+
+    try:
+        re.compile(caracteres_regex)
+    except re.error:
+        raise ValueError("Expressão regular de caracteres inválida")
 
     for col in df_limpo.columns:
         if df_limpo[col].dtype == 'object':
@@ -29,10 +34,7 @@ def limpar_dataframe(df, converter_minusculo=True, remover_especiais=True, carac
                 df_limpo[col] = df_limpo[col].str.lower()
             if remover_especiais:
                 df_limpo[col] = df_limpo[col].apply(remover_acentos)
-                try:
-                    df_limpo[col] = df_limpo[col].apply(lambda x: re.sub(caracteres_regex, ' ', x))
-                except re.error as e:
-                    raise ValueError(f"Expressão regular inválida: {caracteres_regex} - Erro: {str(e)}")
+                df_limpo[col] = df_limpo[col].apply(lambda x: re.sub(caracteres_regex, ' ', x))
             df_limpo[col] = df_limpo[col].apply(separar_num_letra)
             df_limpo[col] = df_limpo[col].str.replace(r'\s+', ' ', regex=True).str.strip()
     return df_limpo
@@ -41,28 +43,26 @@ def limpar_dataframe(df, converter_minusculo=True, remover_especiais=True, carac
 def index():
     preview = None
     erro = None
+
     if request.method == "POST":
         file = request.files.get("file")
         converter_minusculo = request.form.get("minusculo") == "on"
         remover_especiais = request.form.get("remover") == "on"
-        caracteres = request.form.get("caracteres") or r'[.,;:!?@#$%^&*_+=|\\/<>\[\]{}()\-"\'\`~]'
+        caracteres = request.form.get("caracteres") or r'[.,;:!?@#$%^&*_+=|\\/<>\\\[\]{}()\-"\'`~]'
 
         if file and file.filename:
             try:
                 df = pd.read_excel(file)
                 df_processado = limpar_dataframe(df, converter_minusculo, remover_especiais, caracteres)
-                preview = df_processado.head(10).to_html(classes="table table-striped", index=False)
 
                 buffer = BytesIO()
                 df_processado.to_excel(buffer, index=False)
                 buffer.seek(0)
                 return send_file(buffer, as_attachment=True, download_name="dados_processados.xlsx", mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            except ValueError as e:
-                erro = str(e)
             except Exception as e:
                 erro = f"Erro ao processar: {str(e)}"
 
-    return render_template("index.html", preview=preview, erro=erro)
+    return render_template("index.html", erro=erro)
 
 if __name__ == "__main__":
     app.run(debug=True)
