@@ -1,19 +1,12 @@
-# Core dependencies with fixed versions
 numpy==1.24.3
 pandas==2.0.3
 openpyxl==3.1.2
 flask==3.0.0
-
-# Production
 gunicorn==21.2.0
 whitenoise==6.5.0
-
-# Security
 python-dotenv==1.0.0
 flask-talisman==1.0.0
 flask-limiter==3.3.0
-
-# Utilities
 werkzeug==3.0.0
 flask-wtf==1.2.1
 python-slugify==8.0.1
