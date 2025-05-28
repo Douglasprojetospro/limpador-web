@@ -2,34 +2,152 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Limpador de Dados</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataClean Pro | Ferramenta de Limpeza de Dados</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --accent-color: #2e59d9;
+        }
+        body {
+            background-color: var(--secondary-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            border-radius: 0.5rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            border: none;
+        }
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 0.5rem 0.5rem 0 0 !important;
+            padding: 1.25rem 1.5rem;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        .form-control, .form-select {
+            border-radius: 0.35rem;
+            padding: 0.75rem 1rem;
+        }
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+        .logo {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+    </style>
 </head>
-<body class="p-4">
-    <div class="container">
-        <h2 class="mb-4">🧹 Limpador de Dados</h2>
-        {% if erro %}
-            <div class="alert alert-danger">{{ erro }}</div>
-        {% endif %}
-        <form method="post" enctype="multipart/form-data" class="mb-4">
-            <div class="mb-3">
-                <label class="form-label">Selecionar Arquivo Excel</label>
-                <input type="file" name="file" class="form-control" required>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <h1 class="logo mb-3">
+                        <i class="bi bi-database-check"></i> DataClean Pro
+                    </h1>
+                    <p class="lead text-muted">Ferramenta profissional para limpeza e padronização de dados em planilhas Excel</p>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-upload"></i> Upload do Arquivo</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if erro %}
+                            <div class="alert alert-danger d-flex align-items-center">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <div>{{ erro }}</div>
+                            </div>
+                        {% endif %}
+                        
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Selecione seu arquivo Excel</label>
+                                <div class="input-group">
+                                    <input type="file" name="file" class="form-control" required accept=".xlsx, .xls">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="bi bi-file-earmark-excel"></i>
+                                    </button>
+                                </div>
+                                <div class="form-text">Formatos suportados: .xlsx, .xls</div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h6 class="fw-bold mb-3"><i class="bi bi-gear"></i> Opções de Processamento</h6>
+                                
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" name="minusculo" id="minusculo" checked>
+                                    <label class="form-check-label" for="minusculo">Converter texto para minúsculo</label>
+                                </div>
+                                
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" name="remover" id="remover" checked>
+                                    <label class="form-check-label" for="remover">Remover acentos e caracteres especiais</label>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Caracteres especiais para remover</label>
+                                    <input type="text" name="caracteres" class="form-control" value=".,;:!?@#$%^&*_+=|\/<>[]{}()-\"'`~">
+                                    <div class="form-text">Adicione ou remova caracteres conforme necessário</div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-magic"></i> Processar e Baixar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Como Funciona</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <h6><i class="bi bi-check-circle feature-icon"></i> Funcionalidades</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="bi bi-check text-success"></i> Padronização de texto</li>
+                                    <li><i class="bi bi-check text-success"></i> Remoção de acentos</li>
+                                    <li><i class="bi bi-check text-success"></i> Limpeza de caracteres especiais</li>
+                                    <li><i class="bi bi-check text-success"></i> Separação automática de números e letras</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6><i class="bi bi-lightbulb feature-icon"></i> Dicas</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="bi bi-arrow-right-short text-primary"></i> Mantenha backup dos arquivos originais</li>
+                                    <li><i class="bi bi-arrow-right-short text-primary"></i> Revise os caracteres especiais antes de processar</li>
+                                    <li><i class="bi bi-arrow-right-short text-primary"></i> Para grandes arquivos, o processamento pode demorar</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-check">
-                <input type="checkbox" name="minusculo" class="form-check-input" checked>
-                <label class="form-check-label">Converter para minúsculo</label>
-            </div>
-            <div class="form-check">
-                <input type="checkbox" name="remover" class="form-check-input" checked>
-                <label class="form-check-label">Remover acentos e caracteres especiais</label>
-            </div>
-            <div class="mb-3 mt-2">
-                <label class="form-label">Caracteres especiais para remover (regex):</label>
-                <input type="text" name="caracteres" class="form-control" value="[.,;:!?@#$%^&*_+=|\\/<>\[\]{}()\-\"'`~]">
-            </div>
-            <button type="submit" class="btn btn-primary">Processar e Baixar Excel</button>
-        </form>
+        </div>
     </div>
+
+    <footer class="text-center text-muted mt-5 mb-3">
+        <small>DataClean Pro &copy; 2023 - Ferramenta de limpeza de dados</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
