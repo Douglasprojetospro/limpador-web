@@ -1,4 +1,18 @@
-flask
-pandas
-openpyxl
-gunicorn
+# Core
+flask==3.0.0
+pandas==2.1.0
+openpyxl==3.1.2
+
+# Production
+gunicorn==21.2.0
+whitenoise==6.5.0  # Para servir arquivos estáticos em produção
+
+# Security
+python-dotenv==1.0.0  # Para gerenciar variáveis de ambiente
+flask-talisman==1.0.0  # HTTPS e headers de segurança
+flask-limiter==3.3.0  # Rate limiting
+
+# Utilities
+flask-wtf==1.2.1  # Proteção CSRF e validação de formulários
+email-validator==2.0.0  # Validação de e-mail (se tiver auth)
+python-slugify==8.0.1  # Para strings URL-friendly
