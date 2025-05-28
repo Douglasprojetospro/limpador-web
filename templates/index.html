@@ -1,153 +1,257 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ferramenta profissional para limpeza e padronização de dados em planilhas Excel">
     <title>DataClean Pro | Ferramenta de Limpeza de Dados</title>
+    
+    <!-- Preload de recursos críticos -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" as="style">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" as="script">
+    
+    <!-- CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
     <style>
         :root {
             --primary-color: #4e73df;
+            --primary-dark: #2e59d9;
             --secondary-color: #f8f9fc;
-            --accent-color: #2e59d9;
+            --text-color: #2d3748;
+            --text-muted: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --border-radius: 0.5rem;
+            --box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            --transition: all 0.3s ease;
         }
+        
         body {
             background-color: var(--secondary-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
         }
+        
         .card {
-            border-radius: 0.5rem;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
             border: none;
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
         }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 2rem rgba(58, 59, 69, 0.2);
+        }
+        
         .card-header {
             background-color: var(--primary-color);
             color: white;
-            border-radius: 0.5rem 0.5rem 0 0 !important;
+            border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
             padding: 1.25rem 1.5rem;
         }
+        
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: var(--transition);
         }
-        .btn-primary:hover {
-            background-color: var(--accent-color);
-            border-color: var(--accent-color);
+        
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
         }
+        
         .form-control, .form-select {
-            border-radius: 0.35rem;
+            border-radius: var(--border-radius);
             padding: 0.75rem 1rem;
+            border: 1px solid #ced4da;
+            transition: var(--transition);
         }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        }
+        
         .feature-icon {
             font-size: 1.5rem;
             margin-right: 0.5rem;
             color: var(--primary-color);
         }
+        
         .logo {
-            font-weight: 600;
+            font-weight: 700;
             color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+        
+        .list-features li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 1.75rem;
+        }
+        
+        .list-features i {
+            position: absolute;
+            left: 0;
+            top: 0.25rem;
+        }
+        
+        .input-group-text {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        footer {
+            margin-top: 3rem;
+            padding: 1rem 0;
+            color: var(--text-muted);
+        }
+        
+        @media (max-width: 768px) {
+            .card {
+                margin-bottom: 1rem;
+            }
+            
+            .btn-primary {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container py-5">
+    <div class="container py-4 py-lg-5">
         <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="text-center mb-5">
-                    <h1 class="logo mb-3">
-                        <i class="bi bi-database-check"></i> DataClean Pro
+            <div class="col-lg-10 col-xl-8">
+                <header class="text-center mb-4 mb-lg-5">
+                    <h1 class="logo display-4 mb-3">
+                        <i class="bi bi-database-check" aria-hidden="true"></i> DataClean Pro
                     </h1>
                     <p class="lead text-muted">Ferramenta profissional para limpeza e padronização de dados em planilhas Excel</p>
-                </div>
+                </header>
 
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-upload"></i> Upload do Arquivo</h5>
-                    </div>
-                    <div class="card-body">
-                        {% if erro %}
-                            <div class="alert alert-danger d-flex align-items-center">
-                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                <div>{{ erro }}</div>
-                            </div>
-                        {% endif %}
-                        
-                        <form method="post" enctype="multipart/form-data">
-                            <div class="mb-4">
-                                <label class="form-label fw-bold">Selecione seu arquivo Excel</label>
-                                <div class="input-group">
-                                    <input type="file" name="file" class="form-control" required accept=".xlsx, .xls">
-                                    <button class="btn btn-outline-secondary" type="button">
-                                        <i class="bi bi-file-earmark-excel"></i>
+                <main>
+                    <article class="card mb-4">
+                        <div class="card-header">
+                            <h2 class="h5 mb-0"><i class="bi bi-upload" aria-hidden="true"></i> Upload do Arquivo</h2>
+                        </div>
+                        <div class="card-body">
+                            {% if erro %}
+                                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                    <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+                                    <div>{{ erro }}</div>
+                                </div>
+                            {% endif %}
+                            
+                            <form method="post" enctype="multipart/form-data" id="uploadForm">
+                                <div class="mb-4">
+                                    <label for="fileInput" class="form-label fw-bold">Selecione seu arquivo Excel</label>
+                                    <div class="input-group">
+                                        <input type="file" name="file" id="fileInput" class="form-control" required accept=".xlsx, .xls" aria-describedby="fileHelp">
+                                        <span class="input-group-text"><i class="bi bi-file-earmark-excel" aria-hidden="true"></i></span>
+                                    </div>
+                                    <div id="fileHelp" class="form-text">Formatos suportados: .xlsx, .xls (tamanho máximo: 10MB)</div>
+                                </div>
+
+                                <section class="mb-4">
+                                    <h3 class="h6 fw-bold mb-3"><i class="bi bi-gear" aria-hidden="true"></i> Opções de Processamento</h3>
+                                    
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" name="minusculo" id="minusculo" checked>
+                                        <label class="form-check-label" for="minusculo">Converter texto para minúsculo</label>
+                                    </div>
+                                    
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" name="remover" id="remover" checked>
+                                        <label class="form-check-label" for="remover">Remover acentos e caracteres especiais</label>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="caracteresInput" class="form-label fw-bold">Caracteres especiais para remover</label>
+                                        <input type="text" name="caracteres" id="caracteresInput" class="form-control" value="{{ caracteres_padrao }}" aria-describedby="charsHelp">
+                                        <div id="charsHelp" class="form-text">Adicione ou remova caracteres conforme necessário</div>
+                                    </div>
+                                </section>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="bi bi-magic me-2" aria-hidden="true"></i> Processar e Baixar
                                     </button>
                                 </div>
-                                <div class="form-text">Formatos suportados: .xlsx, .xls (até 10MB)</div>
-                            </div>
+                            </form>
+                        </div>
+                    </article>
 
-                            <div class="mb-4">
-                                <h6 class="fw-bold mb-3"><i class="bi bi-gear"></i> Opções de Processamento</h6>
-                                
-                                <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input" type="checkbox" name="minusculo" id="minusculo" checked>
-                                    <label class="form-check-label" for="minusculo">Converter texto para minúsculo</label>
-                                </div>
-                                
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" name="remover" id="remover" checked>
-                                    <label class="form-check-label" for="remover">Remover acentos e caracteres especiais</label>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Caracteres especiais para remover</label>
-                                    <input type="text" name="caracteres" class="form-control" value="{{ caracteres_padrao }}">
-                                    <div class="form-text">Adicione ou remova caracteres conforme necessário</div>
-                                </div>
-                            </div>
-
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="bi bi-magic"></i> Processar e Baixar
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Como Funciona</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <h6><i class="bi bi-check-circle feature-icon"></i> Funcionalidades</h6>
-                                <ul class="list-unstyled">
-                                    <li><i class="bi bi-check text-success"></i> Padronização de texto</li>
-                                    <li><i class="bi bi-check text-success"></i> Remoção de acentos</li>
-                                    <li><i class="bi bi-check text-success"></i> Limpeza de caracteres especiais</li>
-                                    <li><i class="bi bi-check text-success"></i> Separação automática de números e letras</li>
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <h6><i class="bi bi-lightbulb feature-icon"></i> Dicas</h6>
-                                <ul class="list-unstyled">
-                                    <li><i class="bi bi-arrow-right-short text-primary"></i> Mantenha backup dos arquivos originais</li>
-                                    <li><i class="bi bi-arrow-right-short text-primary"></i> Revise os caracteres especiais antes de processar</li>
-                                    <li><i class="bi bi-arrow-right-short text-primary"></i> Para grandes arquivos, o processamento pode demorar</li>
-                                </ul>
+                    <article class="card">
+                        <div class="card-header">
+                            <h2 class="h5 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> Como Funciona</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <section class="col-md-6 mb-3 mb-md-0">
+                                    <h3 class="h6"><i class="bi bi-check-circle feature-icon" aria-hidden="true"></i> Funcionalidades</h3>
+                                    <ul class="list-unstyled list-features">
+                                        <li><i class="bi bi-check text-success" aria-hidden="true"></i> Padronização de texto</li>
+                                        <li><i class="bi bi-check text-success" aria-hidden="true"></i> Remoção de acentos</li>
+                                        <li><i class="bi bi-check text-success" aria-hidden="true"></i> Limpeza de caracteres especiais</li>
+                                        <li><i class="bi bi-check text-success" aria-hidden="true"></i> Separação automática de números e letras</li>
+                                        <li><i class="bi bi-check text-success" aria-hidden="true"></i> Processamento rápido e eficiente</li>
+                                    </ul>
+                                </section>
+                                <section class="col-md-6">
+                                    <h3 class="h6"><i class="bi bi-lightbulb feature-icon" aria-hidden="true"></i> Dicas &amp; Boas Práticas</h3>
+                                    <ul class="list-unstyled list-features">
+                                        <li><i class="bi bi-arrow-right-short text-primary" aria-hidden="true"></i> Mantenha backup dos arquivos originais</li>
+                                        <li><i class="bi bi-arrow-right-short text-primary" aria-hidden="true"></i> Revise os caracteres especiais antes de processar</li>
+                                        <li><i class="bi bi-arrow-right-short text-primary" aria-hidden="true"></i> Arquivos grandes podem demorar mais para processar</li>
+                                        <li><i class="bi bi-arrow-right-short text-primary" aria-hidden="true"></i> Verifique sempre o resultado antes de usar em produção</li>
+                                    </ul>
+                                </section>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </article>
+                </main>
             </div>
         </div>
     </div>
 
-    <footer class="text-center text-muted mt-5 mb-3">
-        <small>DataClean Pro &copy; 2023 - Ferramenta de limpeza de dados</small>
+    <footer class="text-center text-muted">
+        <div class="container">
+            <small>DataClean Pro &copy; <span id="currentYear"></span> - Ferramenta profissional de limpeza de dados</small>
+            <p class="mt-2 mb-0"><small>Versão 2.1.0</small></p>
+        </div>
     </footer>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Atualiza o ano no footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // Validação do formulário
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            const fileInput = document.getElementById('fileInput');
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            
+            if (fileInput.files.length > 0 && fileInput.files[0].size > maxSize) {
+                e.preventDefault();
+                alert('O arquivo é muito grande. O tamanho máximo permitido é 10MB.');
+            }
+        });
+    </script>
 </body>
 </html>
