@@ -3,6 +3,7 @@
 
 """
 DataClean Pro - Aplicação Flask para limpeza de dados em Excel
+Arquivo principal: limpador_web.py
 Versão: 2.1.0
 """
 
@@ -20,7 +21,7 @@ from flask_limiter.util import get_remote_address
 from werkzeug.utils import secure_filename
 
 # =============================================
-# VERIFICAÇÃO DE VERSÕES E CONFIGURAÇÃO INICIAL
+# VERIFICAÇÃO DE VERSÕES
 # =============================================
 
 def check_versions():
@@ -41,7 +42,6 @@ def check_versions():
         )
         raise ImportError(error_msg)
 
-# Executa a verificação ao importar
 check_versions()
 
 # =============================================
@@ -91,7 +91,7 @@ limiter = Limiter(
 # =============================================
 
 def remover_acentos(texto):
-    """Remove acentos e caracteres especiais de um texto"""
+    """Remove acentos e caracteres especiais"""
     if not isinstance(texto, str):
         return texto
         
@@ -105,69 +105,37 @@ def separar_num_letra(texto):
     if not isinstance(texto, str):
         return texto
         
-    # Casos básicos: número + letra ou letra + número
     texto = re.sub(r'(?<=\d)(?=[a-zA-Z])', ' ', texto)
     texto = re.sub(r'(?<=[a-zA-Z])(?=\d)', ' ', texto)
-    
-    # Casos com caracteres especiais entre números e letras
-    texto = re.sub(r'(\d)[^\w\s](\w)', r'\1 \2', texto)  # número + especial + letra
-    texto = re.sub(r'(\w)[^\w\s](\d)', r'\1 \2', texto)  # letra + especial + número
-    
+    texto = re.sub(r'(\d)[^\w\s](\w)', r'\1 \2', texto)
+    texto = re.sub(r'(\w)[^\w\s](\d)', r'\1 \2', texto)
     return texto
 
 def limpar_dataframe(df, converter_minusculo=True, remover_especiais=True, caracteres_personalizados=None):
-    """
-    Processa um DataFrame aplicando várias transformações de limpeza
-    
-    Args:
-        df: DataFrame pandas a ser processado
-        converter_minusculo: Converte texto para minúsculo
-        remover_especiais: Remove caracteres especiais
-        caracteres_personalizados: String com caracteres adicionais para remover
-        
-    Returns:
-        DataFrame processado
-    """
+    """Processa o DataFrame com as opções de limpeza"""
     df_limpo = df.copy()
-    
-    # Caracteres padrão para remoção
     caracteres_padrao = r'.,;:!?@#$%^&*_+=|\\/<>[]{}()\-"\'`~'
     
-    # Combina com caracteres personalizados se fornecidos
     if caracteres_personalizados and isinstance(caracteres_personalizados, str):
         todos_caracteres = caracteres_padrao + caracteres_personalizados
     else:
         todos_caracteres = caracteres_padrao
     
-    # Prepara regex com escape para caracteres especiais
     caracteres_regex = re.escape(todos_caracteres)
     
-    # Processa cada coluna
     for col in df_limpo.columns:
         if pd.api.types.is_string_dtype(df_limpo[col]):
-            # Converte para string e remove espaços extras
             df_limpo[col] = df_limpo[col].astype(str).str.strip()
             
-            # Conversão para minúsculo
             if converter_minusculo:
                 df_limpo[col] = df_limpo[col].str.lower()
             
-            # Remoção de caracteres especiais
             if remover_especiais:
-                df_limpo[col] = (
-                    df_limpo[col]
-                    .apply(remover_acentos)
-                    .apply(lambda x: re.sub(f'[{caracteres_regex}]', ' ', x))
-                
-            # Separação de números e letras
-            df_limpo[col] = df_limpo[col].apply(separar_num_letra)
+                df_limpo[col] = df_limpo[col].apply(remover_acentos)
+                df_limpo[col] = df_limpo[col].apply(lambda x: re.sub(f'[{caracteres_regex}]', ' ', x))
             
-            # Normalização de espaços
-            df_limpo[col] = (
-                df_limpo[col]
-                .str.replace(r'\s+', ' ', regex=True)
-                .str.strip()
-            )
+            df_limpo[col] = df_limpo[col].apply(separar_num_letra)
+            df_limpo[col] = df_limpo[col].str.replace(r'\s+', ' ', regex=True).str.strip()
     
     return df_limpo
 
@@ -178,33 +146,28 @@ def limpar_dataframe(df, converter_minusculo=True, remover_especiais=True, carac
 @app.route("/", methods=["GET", "POST"])
 @limiter.limit("5 per minute")
 def index():
-    """Rota principal que exibe o formulário e processa os arquivos"""
-    # Valores padrão para o formulário
+    """Rota principal para upload e processamento"""
     caracteres_padrao = '.,;:!?@#$%^&*_+=|\\/<>[]{}()\-"\'`~'
     erro = None
     
     if request.method == "POST":
         try:
-            # Obter parâmetros do formulário
             file = request.files.get("file")
             converter_minusculo = request.form.get("minusculo") == "on"
             remover_especiais = request.form.get("remover") == "on"
             caracteres_personalizados = request.form.get("caracteres", "").strip()
             
-            # Validação básica do arquivo
             if not file or file.filename == "":
                 raise ValueError("Nenhum arquivo selecionado")
                 
             if not file.filename.lower().endswith(('.xlsx', '.xls')):
-                raise ValueError("Formato de arquivo inválido. Use .xlsx ou .xls")
+                raise ValueError("Formato inválido. Use .xlsx ou .xls")
             
-            # Processamento seguro do arquivo
             filename = secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             
             try:
-                # Leitura e processamento do Excel
                 df = pd.read_excel(filepath, engine='openpyxl')
                 df_processado = limpar_dataframe(
                     df, 
@@ -213,20 +176,13 @@ def index():
                     caracteres_personalizados
                 )
                 
-                # Preparação do arquivo para download
                 buffer = BytesIO()
-                df_processado.to_excel(
-                    buffer, 
-                    index=False, 
-                    engine='openpyxl'
-                )
+                df_processado.to_excel(buffer, index=False, engine='openpyxl')
                 buffer.seek(0)
                 
-                # Limpeza do arquivo temporário
                 if os.path.exists(filepath):
                     os.remove(filepath)
                 
-                # Envio do arquivo processado
                 return send_file(
                     buffer,
                     as_attachment=True,
@@ -242,18 +198,12 @@ def index():
         except Exception as e:
             erro = f"Erro no processamento: {str(e)}"
     
-    # Renderização do template
-    return render_template(
-        "index.html", 
-        erro=erro, 
-        caracteres_padrao=caracteres_padrao
-    )
+    return render_template("index.html", erro=erro, caracteres_padrao=caracteres_padrao)
 
 # =============================================
 # INICIALIZAÇÃO
 # =============================================
 
 if __name__ == "__main__":
-    # Configuração para desenvolvimento
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=False)
