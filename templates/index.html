@@ -20,13 +20,15 @@
             background-color: var(--secondary-color);
             font-family: 'Segoe UI', system-ui, sans-serif;
             color: var(--text-color);
+            line-height: 1.6;
         }
 
         .header {
             background-color: var(--primary-color);
             color: white;
-            padding: 3rem 0;
+            padding: 2.5rem 0;
             border-radius: 0 0 var(--border-radius) var(--border-radius);
+            margin-bottom: 2rem;
         }
 
         .upload-container {
@@ -42,11 +44,12 @@
         .upload-area {
             border: 2px dashed #d1d7e0;
             border-radius: var(--border-radius);
-            padding: 2.5rem;
+            padding: 2rem;
             text-align: center;
             transition: all 0.3s ease;
             cursor: pointer;
             background-color: #f9fafc;
+            margin-bottom: 1.5rem;
         }
 
         .upload-area:hover {
@@ -55,7 +58,7 @@
         }
 
         .upload-icon {
-            font-size: 3rem;
+            font-size: 2.5rem;
             color: var(--primary-color);
             margin-bottom: 1rem;
         }
@@ -71,6 +74,8 @@
         .option-item {
             padding: 0.75rem 0;
             border-bottom: 1px solid #f0f2f5;
+            display: flex;
+            align-items: center;
         }
 
         .option-item:last-child {
@@ -88,11 +93,13 @@
             border-color: var(--primary-color);
             padding: 0.75rem 1.5rem;
             font-weight: 600;
+            transition: all 0.2s ease;
         }
 
         .btn-primary:hover {
             background-color: var(--primary-hover);
             border-color: var(--primary-hover);
+            transform: translateY(-1px);
         }
 
         .file-badge {
@@ -104,10 +111,27 @@
             margin-top: 1rem;
             display: inline-flex;
             align-items: center;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .file-badge i {
             margin-right: 0.5rem;
+        }
+
+        .form-control {
+            border-radius: var(--border-radius);
+            padding: 0.5rem 1rem;
+        }
+
+        h1, h5 {
+            font-weight: 700;
+        }
+
+        .lead {
+            font-size: 1.1rem;
         }
     </style>
 </head>
@@ -137,12 +161,12 @@
                     <input type="file" name="file" id="fileInput" accept=".xlsx,.xls" class="d-none" required>
                 </div>
 
-                <div class="option-card mt-4">
+                <div class="option-card">
                     <h5 class="fw-bold mb-3">
                         <i class="bi bi-gear"></i> Opções de Processamento
                     </h5>
 
-                    <div class="option-item d-flex align-items-center">
+                    <div class="option-item">
                         <div class="form-check form-switch flex-grow-1">
                             <input class="form-check-input" type="checkbox" name="minusculo" id="lowercaseOption" checked>
                             <label class="form-check-label" for="lowercaseOption">
@@ -152,7 +176,7 @@
                         </div>
                     </div>
 
-                    <div class="option-item d-flex align-items-center">
+                    <div class="option-item">
                         <div class="form-check form-switch flex-grow-1">
                             <input class="form-check-input" type="checkbox" name="remover" id="specialCharsOption" checked>
                             <label class="form-check-label" for="specialCharsOption">
@@ -193,17 +217,18 @@
         const fileInput = document.getElementById('fileInput');
         const fileName = document.getElementById('fileName');
 
-        dropArea.addEventListener('click', () => {
-            fileInput.click();
-        });
+        // Click to select file
+        dropArea.addEventListener('click', () => fileInput.click());
 
-        fileInput.addEventListener('change', (e) => {
+        // Handle file selection
+        fileInput.addEventListener('change', () => {
             if (fileInput.files.length) {
                 fileName.textContent = fileInput.files[0].name;
                 dropArea.classList.add('border-primary');
             }
         });
 
+        // Drag and drop functionality
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, preventDefaults, false);
         });
@@ -236,8 +261,10 @@
         function handleDrop(e) {
             const dt = e.dataTransfer;
             const files = dt.files;
-            fileInput.files = files;
-            fileName.textContent = files[0].name;
+            if (files.length) {
+                fileInput.files = files;
+                fileName.textContent = files[0].name;
+            }
         }
     </script>
 </body>
