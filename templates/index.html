@@ -3,251 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Ferramenta profissional para limpeza e padronização de dados em planilhas Excel">
-    <meta name="keywords" content="Excel, limpeza de dados, padronização, planilhas, ferramenta">
-    <meta name="author" content="DataClean Pro">
-    <meta name="theme-color" content="#0d6efd">
-    
-    <title>DataClean Pro | Ferramenta de Limpeza de Dados</title>
-    
-    <!-- Bootstrap CSS -->
+    <title>DataClean Pro | Limpeza de Dados Excel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    
     <style>
         :root {
-            --primary-color: #0d6efd;
-            --primary-dark: #0b5ed7;
-            --primary-light: rgba(13, 110, 253, 0.1);
-            --secondary-color: #f8f9fa;
-            --text-color: #212529;
-            --text-muted: #6c757d;
-            --success-color: #198754;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
-            --border-radius: 10px;
-            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-            --focus-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            --primary-color: #4e73df;
+            --primary-hover: #2e59d9;
+            --secondary-color: #f8f9fc;
+            --text-color: #2d3748;
+            --border-radius: 12px;
+            --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
         }
         
         body {
             background-color: var(--secondary-color);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             color: var(--text-color);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
         
         .header {
             background-color: var(--primary-color);
             color: white;
-            padding: 2rem 0;
-            margin-bottom: 2rem;
+            padding: 3rem 0;
             border-radius: 0 0 var(--border-radius) var(--border-radius);
         }
         
-        .header h1 {
-            font-weight: 700;
-        }
-        
-        .header .lead {
-            font-weight: 300;
-            opacity: 0.9;
-        }
-        
-        .card {
+        .upload-container {
+            background-color: white;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
-            margin-bottom: 20px;
-            border: none;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            padding: 2rem;
+            margin-top: -50px;
+            position: relative;
+            z-index: 10;
         }
         
         .upload-area {
-            border: 2px dashed #ced4da;
+            border: 2px dashed #d1d7e0;
             border-radius: var(--border-radius);
-            padding: 2rem;
+            padding: 2.5rem;
             text-align: center;
-            margin-bottom: 1.5rem;
-            transition: var(--transition);
-            background-color: white;
+            transition: all 0.3s ease;
             cursor: pointer;
+            background-color: #f9fafc;
         }
         
-        .upload-area:hover, .upload-area:focus-within {
+        .upload-area:hover {
             border-color: var(--primary-color);
-            background-color: var(--primary-light);
-            outline: none;
+            background-color: rgba(78, 115, 223, 0.05);
         }
         
-        .checkbox-container {
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .option-card {
             background-color: white;
             border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
             padding: 1.5rem;
             margin-bottom: 1.5rem;
-            box-shadow: var(--box-shadow);
         }
         
-        .characters-display {
-            font-family: monospace;
-            background-color: #f8f9fa;
-            padding: 1rem;
-            border-radius: var(--border-radius);
-            border: 1px solid #dee2e6;
-            margin-bottom: 1.5rem;
-            word-break: break-all;
+        .option-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f0f2f5;
         }
         
-        .btn-process {
-            width: 100%;
-            padding: 0.75rem;
-            font-size: 1.1rem;
+        .option-item:last-child {
+            border-bottom: none;
+        }
+        
+        .form-switch .form-check-input {
+            width: 3em;
+            height: 1.5em;
+            margin-right: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.75rem 1.5rem;
             font-weight: 600;
-            transition: var(--transition);
         }
         
-        .btn-process:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
         }
         
-        footer {
-            background-color: var(--text-color);
-            color: white;
-            padding: 1.5rem 0;
-            margin-top: auto;
+        .file-badge {
+            background-color: #e9ecef;
+            color: #495057;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
         }
         
-        @media (max-width: 768px) {
-            .header {
-                padding: 1.5rem 0;
-            }
-            
-            .upload-area {
-                padding: 1.5rem;
-            }
+        .file-badge i {
+            margin-right: 0.5rem;
         }
     </style>
 </head>
 <body>
     <div class="header text-center">
         <div class="container">
-            <div class="d-flex justify-content-center align-items-center mb-3">
-                <i class="bi bi-database-check fs-1 me-3"></i>
-                <h1 class="display-4 fw-bold">DataClean Pro</h1>
-            </div>
-            <p class="lead">Ferramenta profissional para limpeza e padronização de dados em planilhas Excel</p>
+            <h1 class="display-5 fw-bold mb-3">
+                <i class="bi bi-magic"></i> DataClean Pro
+            </h1>
+            <p class="lead">Ferramenta profissional para limpeza e padronização de dados</p>
         </div>
     </div>
 
-    <div class="container mb-5">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-body">
-                        <form method="post" enctype="multipart/form-data" id="uploadForm" novalidate>
-                            <!-- Upload Section -->
-                            <h2 class="h5 fw-bold mb-3">
-                                <i class="bi bi-upload me-2"></i> Upload do Arquivo
-                            </h2>
-                            <div class="upload-area" tabindex="0">
-                                <label for="fileInput" class="d-block cursor-pointer">
-                                    <i class="bi bi-cloud-arrow-up fs-1 text-primary"></i>
-                                    <p class="mt-2 mb-1 fw-bold">Selecione seu arquivo Excel</p>
-                                    <p class="text-muted mb-2">Arraste e solte ou clique para selecionar</p>
-                                    <span class="badge bg-secondary" id="fileNameDisplay">Nenhum arquivo selecionado</span>
-                                </label>
-                                <input type="file" name="file" id="fileInput" class="d-none" required accept=".xlsx, .xls">
-                                <div class="file-info mt-2">
-                                    Formatos suportados: .xlsx, .xls (tamanho máximo: 10MB)
-                                </div>
-                            </div>
-
-                            <!-- Options Section -->
-                            <h2 class="h5 fw-bold mb-3 mt-4">
-                                <i class="bi bi-gear me-2"></i> Opções de Processamento
-                            </h2>
-                            <div class="checkbox-container">
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" name="minusculo" id="minusculo" checked>
-                                    <label class="form-check-label" for="minusculo">Converter texto para minúsculo</label>
-                                </div>
-                                
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" name="remover" id="remover" checked>
-                                    <label class="form-check-label" for="remover">Remover acentos e caracteres especiais</label>
-                                </div>
-                            </div>
-
-                            <!-- Special Characters Section -->
-                            <h2 class="h5 fw-bold mb-3">
-                                <i class="bi bi-pencil-square me-2"></i> Caracteres especiais para remover
-                            </h2>
-                            <div class="characters-display">
-                                .,;:!?@#$%^&*_+=|\/<>[]{}()"'~
-                            </div>
-                            <input type="text" name="caracteres" class="form-control" value=".,;:!?@#$%^&*_+=|\/<>[]{}()\"'~">
-                            <div class="form-text mt-2">Adicione ou remova caracteres conforme necessário</div>
-
-                            <!-- Process Button -->
-                            <button type="submit" class="btn btn-primary btn-lg btn-process mt-4">
-                                <i class="bi bi-magic me-2"></i> Processar e Baixar
-                            </button>
-                        </form>
+    <div class="container" style="max-width: 800px;">
+        <div class="upload-container">
+            <div class="upload-area" id="dropArea">
+                <div class="upload-icon">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Selecione seu arquivo Excel</h5>
+                <p class="text-muted mb-3">Arraste e solte ou clique para selecionar</p>
+                <span class="file-badge" id="fileBadge">
+                    <i class="bi bi-file-earmark-excel"></i>
+                    <span id="fileName">Nenhum arquivo selecionado</span>
+                </span>
+                <input type="file" id="fileInput" accept=".xlsx,.xls" class="d-none">
+            </div>
+            
+            <div class="option-card mt-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-gear"></i> Opções de Processamento
+                </h5>
+                
+                <div class="option-item d-flex align-items-center">
+                    <div class="form-check form-switch flex-grow-1">
+                        <input class="form-check-input" type="checkbox" id="lowercaseOption" checked>
+                        <label class="form-check-label" for="lowercaseOption">
+                            <i class="bi bi-fonts" style="color: var(--primary-color);"></i>
+                            Converter texto para minúsculo
+                        </label>
                     </div>
                 </div>
-
-                <div class="alert alert-info mt-4" role="alert">
-                    <i class="bi bi-info-circle me-2"></i> Seus dados são processados localmente no seu navegador e não são enviados para nossos servidores.
+                
+                <div class="option-item d-flex align-items-center">
+                    <div class="form-check form-switch flex-grow-1">
+                        <input class="form-check-input" type="checkbox" id="specialCharsOption" checked>
+                        <label class="form-check-label" for="specialCharsOption">
+                            <i class="bi bi-input-cursor-text" style="color: var(--primary-color);"></i>
+                            Remover acentos e caracteres especiais
+                        </label>
+                    </div>
                 </div>
+            </div>
+            
+            <button class="btn btn-primary w-100 mt-3 py-3">
+                <i class="bi bi-lightning-charge"></i> Processar e Baixar
+            </button>
+            
+            <div class="alert alert-info mt-4" role="alert">
+                <i class="bi bi-info-circle"></i> Seus dados são processados localmente e não são enviados para nossos servidores.
             </div>
         </div>
     </div>
-    
-    <footer class="text-center py-4">
-        <div class="container">
-            <p class="mb-0">© <span id="currentYear"></span> DataClean Pro. Todos os direitos reservados.</p>
-            <p class="text-muted small mt-2">Versão 1.0.0</p>
-        </div>
-    </footer>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <script>
-        // Update current year in footer
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        // File selection handling
+        const dropArea = document.getElementById('dropArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
         
-        // File input display
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const fileName = e.target.files[0] ? e.target.files[0].name : 'Nenhum arquivo selecionado';
-            document.getElementById('fileNameDisplay').textContent = fileName;
+        // Click handler
+        dropArea.addEventListener('click', () => {
+            fileInput.click();
         });
         
-        // Drag and drop functionality
-        const uploadArea = document.querySelector('.upload-area');
+        // File input change handler
+        fileInput.addEventListener('change', (e) => {
+            if (fileInput.files.length) {
+                fileName.textContent = fileInput.files[0].name;
+                dropArea.classList.add('border-primary');
+            }
+        });
         
+        // Drag and drop handlers
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, preventDefaults, false);
+            dropArea.addEventListener(eventName, preventDefaults, false);
         });
         
         function preventDefaults(e) {
@@ -256,28 +203,30 @@
         }
         
         ['dragenter', 'dragover'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, highlight, false);
+            dropArea.addEventListener(eventName, highlight, false);
         });
         
         ['dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, unhighlight, false);
+            dropArea.addEventListener(eventName, unhighlight, false);
         });
         
         function highlight() {
-            uploadArea.classList.add('bg-primary', 'bg-opacity-10');
+            dropArea.classList.add('border-primary');
+            dropArea.style.backgroundColor = 'rgba(78, 115, 223, 0.1)';
         }
         
         function unhighlight() {
-            uploadArea.classList.remove('bg-primary', 'bg-opacity-10');
+            dropArea.classList.remove('border-primary');
+            dropArea.style.backgroundColor = '';
         }
         
-        uploadArea.addEventListener('drop', handleDrop, false);
+        dropArea.addEventListener('drop', handleDrop, false);
         
         function handleDrop(e) {
             const dt = e.dataTransfer;
             const files = dt.files;
-            document.getElementById('fileInput').files = files;
-            document.getElementById('fileNameDisplay').textContent = files[0].name;
+            fileInput.files = files;
+            fileName.textContent = files[0].name;
         }
     </script>
 </body>
