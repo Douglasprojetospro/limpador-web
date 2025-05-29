@@ -3,265 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Ferramenta profissional para limpeza e padronização de dados em planilhas Excel">
-    <meta name="keywords" content="Excel, limpeza de dados, padronização, planilhas, ferramenta">
-    <meta name="author" content="DataClean Pro">
+    <meta name="description" content="Ferramenta de Cotação de Frete">
     <meta name="theme-color" content="#4e73df">
-    
-    <title>DataClean Pro | Ferramenta de Limpeza de Dados</title>
-    
-    <!-- Preload de recursos críticos -->
+    <title>FreteFácil | Cotador de Frete</title>
+
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     </noscript>
-    
-    <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
-    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚚</text></svg>">
+
     <style>
         :root {
-            --primary-color: #4e73df;
-            --primary-dark: #2e59d9;
-            --primary-light: rgba(78, 115, 223, 0.1);
-            --secondary-color: #f8f9fc;
-            --text-color: #2d3748;
+            --primary: #4e73df;
+            --light-bg: #f8f9fc;
+            --text-dark: #2d3748;
             --text-muted: #6c757d;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
-            --border-radius: 0.5rem;
-            --box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-            --transition: all 0.3s ease;
-            --focus-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+            --radius: 0.5rem;
+            --shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
         }
-        
+
         body {
-            background-color: var(--secondary-color);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            color: var(--text-color);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background: var(--light-bg);
+            font-family: 'Segoe UI', sans-serif;
+            color: var(--text-dark);
         }
-        
-        .container-main {
-            flex: 1;
-        }
-        
-        .upload-area {
-            border: 2px dashed #ced4da;
-            border-radius: var(--border-radius);
-            padding: 2rem;
+
+        header {
+            padding: 2rem 0;
             text-align: center;
-            margin-bottom: 1.5rem;
-            transition: var(--transition);
-            background-color: white;
-            cursor: pointer;
         }
-        
-        .upload-area:hover, .upload-area:focus-within {
-            border-color: var(--primary-color);
-            background-color: var(--primary-light);
-            outline: none;
+
+        .upload-box {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
         }
-        
-        .upload-area:focus-within {
-            box-shadow: var(--focus-shadow);
+
+        .upload-box input[type=file] {
+            display: none;
         }
-        
-        .file-info {
-            margin-top: 1rem;
+
+        .btn-custom {
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+        }
+
+        footer {
+            background: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
             font-size: 0.9rem;
             color: var(--text-muted);
         }
-        
-        .checkbox-container {
-            background-color: white;
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--box-shadow);
-        }
-        
-        .form-check {
-            margin-bottom: 0.75rem;
-        }
-        
-        .form-switch .form-check-input:focus {
-            box-shadow: var(--focus-shadow);
-        }
-        
-        .characters-display {
-            font-family: monospace;
-            background-color: #f8f9fa;
-            padding: 1rem;
-            border-radius: var(--border-radius);
-            border: 1px solid #dee2e6;
-            margin-bottom: 1.5rem;
-            word-break: break-all;
-            overflow-x: auto;
-        }
-        
-        .btn-process {
-            width: 100%;
-            padding: 0.75rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-        
-        .btn-process:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .btn-process:active {
-            transform: translateY(0);
-        }
-        
-        .badge-file {
-            max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            display: inline-block;
-            vertical-align: middle;
-        }
-        
-        footer {
-            background-color: white;
-            padding: 1.5rem 0;
-            margin-top: 3rem;
-            box-shadow: 0 -0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
-        }
-        
-        @media (max-width: 768px) {
-            .upload-area {
-                padding: 1.5rem;
-            }
-            
-            .display-5 {
-                font-size: 2.5rem;
-            }
-        }
-        
-        /* Animações */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-        
-        /* Acessibilidade */
-        .visually-hidden {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-        
-        /* Melhorias para foco */
-        a:focus, button:focus, input:focus, textarea:focus, select:focus {
-            outline: none;
-            box-shadow: var(--focus-shadow);
+
+        .results-table {
+            margin-top: 2rem;
         }
     </style>
 </head>
 <body>
-    <div class="container container-main py-4 py-lg-5 animate-fade-in">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <header class="text-center mb-4 mb-lg-5">
-                    <h1 class="display-5 fw-bold text-primary mb-3">
-                        <i class="bi bi-database-check" aria-hidden="true"></i> DataClean Pro
-                    </h1>
-                    <p class="lead text-muted">Ferramenta profissional para limpeza e padronização de dados em planilhas Excel</p>
-                </header>
+    <div class="container py-5">
+        <header>
+            <h1 class="text-primary fw-bold">FreteFácil</h1>
+            <p class="text-muted">Calcule o melhor frete com rapidez e precisão</p>
+        </header>
 
-                <main>
-                    <form method="post" enctype="multipart/form-data" id="uploadForm" novalidate>
-                        <!-- Seção de Upload -->
-                        <section class="mb-4">
-                            <h2 class="h5 fw-bold mb-3">
-                                <i class="bi bi-upload" aria-hidden="true"></i> Upload do Arquivo
-                            </h2>
-                            <div class="upload-area" tabindex="0">
-                                <label for="fileInput" class="d-block cursor-pointer">
-                                    <i class="bi bi-cloud-arrow-up fs-1 text-primary" aria-hidden="true"></i>
-                                    <p class="mt-2 mb-1 fw-bold">Selecione seu arquivo Excel</p>
-                                    <p class="text-muted mb-2">Arraste e solte ou clique para selecionar</p>
-                                    <span class="badge bg-secondary badge-file" id="fileNameDisplay">Nenhum arquivo selecionado</span>
-                                    <span class="visually-hidden">Selecionar arquivo Excel</span>
-                                </label>
-                                <input type="file" name="file" id="fileInput" class="d-none" required accept=".xlsx, .xls" aria-describedby="fileHelp">
-                                <div class="file-info" id="fileHelp">
-                                    Formatos suportados: .xlsx, .xls (tamanho máximo: 10MB)
-                                </div>
-                            </div>
-                        </section>
+        <main>
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <div class="alert alert-warning">{{ messages[0] }}</div>
+              {% endif %}
+            {% endwith %}
 
-                        <!-- Seção de Opções -->
-                        <section class="mb-4">
-                            <h2 class="h5 fw-bold mb-3">
-                                <i class="bi bi-gear" aria-hidden="true"></i> Opções de Processamento
-                            </h2>
-                            <div class="checkbox-container">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" name="minusculo" id="minusculo" checked>
-                                    <label class="form-check-label" for="minusculo">Converter texto para minúsculo</label>
-                                </div>
-                                
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" name="remover" id="remover" checked>
-                                    <label class="form-check-label" for="remover">Remover acentos e caracteres especiais</label>
-                                </div>
-                            </div>
-                        </section>
+            <div class="upload-box">
+                <form action="/processar" method="post" enctype="multipart/form-data">
+                    <label for="arquivo" class="form-label">Selecione o arquivo Excel para cotar:</label>
+                    <input type="file" name="arquivo" id="arquivo" class="form-control" required accept=".xls,.xlsx">
+                    <button class="btn btn-custom mt-3" type="submit">
+                        <i class="bi bi-calculator"></i> Processar Cotação
+                    </button>
+                </form>
 
-                        <!-- Seção de Caracteres Especiais -->
-                        <section class="mb-4">
-                            <h2 class="h5 fw-bold mb-3">
-                                <i class="bi bi-pencil-square" aria-hidden="true"></i> Caracteres especiais para remover
-                            </h2>
-                            <div class="characters-display" aria-live="polite">
-                                .,;:!?@#$%^&*_+=|\/<>[]{}()"'`~
-                            </div>
-                            <input type="text" name="caracteres" class="form-control" value=".,;:!?@#$%^&*_+=|\/<>[]{}()\"'`~" aria-label="Caracteres especiais para remover">
-                            <div class="form-text mt-2">Adicione ou remova caracteres conforme necessário</div>
-                        </section>
-
-                        <!-- Botão de Processamento -->
-                        <button type="submit" class="btn btn-primary btn-lg btn-process mb-3">
-                            <i class="bi bi-magic me-2" aria-hidden="true"></i> Processar e Baixar
-                        </button>
-                        
-                        <div class="alert alert-info" role="alert">
-                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i> Seus dados são processados localmente no seu navegador e não são enviados para nossos servidores.
-                        </div>
-                    </form>
-                </main>
+                <a href="/modelo" class="btn btn-link mt-2">Baixar modelo de planilha</a>
             </div>
-        </div>
+
+            {% if resultados %}
+                <div class="results-table">
+                    <h3 class="mt-5">Resultados:</h3>
+                    <table class="table table-bordered table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                {% for col in resultados[0].keys() %}
+                                    <th>{{ col }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in resultados %}
+                                <tr>
+                                    {% for val in row.values() %}
+                                        <td>{{ val }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    {% if download_link %}
+                        <a href="/download?path={{ download_link }}" class="btn btn-success mt-3">
+                            <i class="bi bi-download"></i> Baixar resultado
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </main>
     </div>
-    
-    <footer class="text-center">
-        <div class="container">
-            <p class="mb-0">© <span id="currentYear"></span> DataClean Pro. Todos os direitos reservados.</p>
-            <p class="text-muted small mt-2">Versão 1.0.0</p>
-        </div>
+
+    <footer>
+        <p>&copy; {{ current_year }} FreteFácil - Todos os direitos reservados.</p>
     </footer>
 
-    <!-- Scripts com carregamento otimizado -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
