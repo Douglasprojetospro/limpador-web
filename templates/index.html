@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Limpeza de Dados | Ferramenta Profissional</title>
+  <title>DataClean Pro | Ferramenta Profissional de Limpeza de Dados</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -19,40 +19,55 @@
 
     <main class="main-content">
       <form id="form-processamento" method="POST" enctype="multipart/form-data" class="upload-form">
-        <div class="form-group file-upload">
-          <label for="file-upload" class="upload-label">
-            <i class="fas fa-file-excel"></i>
-            <span id="file-name">Selecione um arquivo Excel (.xlsx)</span>
+        <div class="form-group">
+          <label for="file-upload" class="upload-area" id="upload-area">
+            <i class="fas fa-file-excel fa-3x"></i>
+            <h3>Selecione um arquivo Excel (.xlsx)</h3>
+            <p id="file-instructions">Arraste e solte seu arquivo aqui ou clique para selecionar</p>
+            <span id="file-name" class="file-name-display"></span>
             <input type="file" id="file-upload" name="file" accept=".xlsx,.xls" required>
           </label>
         </div>
 
-        <div class="form-group options-group">
-          <h3><i class="fas fa-cog"></i> Opções de Processamento</h3>
-          
-          <div class="option-item">
-            <input type="checkbox" id="minusculo" name="minusculo" checked>
-            <label for="minusculo">
-              <i class="fas fa-font"></i> Converter texto para minúsculo
-            </label>
+        <div class="options-grid">
+          <div class="option-card">
+            <h3><i class="fas fa-font"></i> Transformação de Texto</h3>
+            
+            <div class="option-item">
+              <input type="checkbox" id="minusculo" name="minusculo" checked>
+              <label for="minusculo">Converter texto para minúsculo</label>
+            </div>
+            
+            <div class="option-item">
+              <input type="checkbox" id="remover_especiais" name="remover_especiais" checked>
+              <label for="remover_especiais">Remover acentos e caracteres especiais</label>
+            </div>
           </div>
-          
-          <div class="option-item">
-            <input type="checkbox" id="remover_especiais" name="remover_especiais" checked>
-            <label for="remover_especiais">
-              <i class="fas fa-language"></i> Remover acentos e caracteres especiais
-            </label>
+
+          <div class="option-card">
+            <h3><i class="fas fa-filter"></i> Filtros Avançados</h3>
+            
+            <div class="form-group">
+              <label for="caracteres">
+                <i class="fas fa-code"></i> Caracteres para remover (regex)
+              </label>
+              <input type="text" id="caracteres" name="caracteres" 
+                     value="[.,;:!?@#$%^&*_+=|\\/<>\[\]{}()\"\'`~]" 
+                     placeholder="Insira a expressão regular">
+              <small class="hint">Padrão regex para identificar caracteres a serem removidos</small>
+            </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="caracteres">
-            <i class="fas fa-filter"></i> Caracteres especiais para remover (regex)
-          </label>
-          <input type="text" id="caracteres" name="caracteres" 
-                 value="[.,;:!?@#$%^&*_+=|\\/<>\[\]{}()\"\'`~]" 
-                 placeholder="Insira a expressão regular para filtro">
-          <small class="hint">Padrão regex para identificar caracteres a serem removidos</small>
+        <div class="file-stats" id="file-stats">
+          <div class="stat-item">
+            <i class="fas fa-file"></i>
+            <span>Tamanho: <strong id="file-size">-</strong></span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-table"></i>
+            <span>Linhas estimadas: <strong id="row-count">-</strong></span>
+          </div>
         </div>
 
         <div class="form-footer">
@@ -76,10 +91,6 @@
         </div>
         <div class="progress-details">
           <p id="status-message">Preparando para iniciar o processamento...</p>
-          <div id="file-stats" class="stats">
-            <div><i class="fas fa-file"></i> <span id="file-size">-</span></div>
-            <div><i class="fas fa-table"></i> <span id="row-count">-</span></div>
-          </div>
         </div>
       </div>
     </main>
@@ -102,32 +113,69 @@
       const progressoTexto = document.getElementById('progresso-texto');
       const statusMessage = document.getElementById('status-message');
       const fileUpload = document.getElementById('file-upload');
-      const fileName = document.getElementById('file-name');
+      const uploadArea = document.getElementById('upload-area');
+      const fileNameDisplay = document.getElementById('file-name');
+      const fileInstructions = document.getElementById('file-instructions');
+      const fileStats = document.getElementById('file-stats');
       const fileSize = document.getElementById('file-size');
       const rowCount = document.getElementById('row-count');
 
-      // Esconder o container de progresso inicialmente
+      // Esconder elementos inicialmente
       progressoContainer.style.display = 'none';
+      fileStats.style.display = 'none';
 
-      // Atualizar nome do arquivo selecionado
-      fileUpload.addEventListener('change', function(e) {
-        if (this.files.length) {
-          fileName.textContent = this.files[0].name;
-          
-          // Mostrar informações do arquivo
-          const size = (this.files[0].size / (1024 * 1024)).toFixed(2);
-          fileSize.textContent = `${size} MB`;
-          
-          // Simular contagem de linhas (seria substituído por cálculo real em produção)
-          const estimatedRows = Math.floor(Math.random() * 5000) + 1000;
-          rowCount.textContent = `~${estimatedRows} linhas`;
+      // Manipulação de drag and drop
+      uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+      });
+
+      uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+      });
+
+      uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        if (e.dataTransfer.files.length) {
+          fileUpload.files = e.dataTransfer.files;
+          handleFileSelection();
         }
       });
 
+      // Atualizar quando arquivo for selecionado
+      fileUpload.addEventListener('change', handleFileSelection);
+
+      function handleFileSelection() {
+        if (fileUpload.files.length) {
+          const file = fileUpload.files[0];
+          
+          // Mostrar nome do arquivo
+          fileNameDisplay.textContent = file.name;
+          fileInstructions.style.display = 'none';
+          fileNameDisplay.style.display = 'block';
+          
+          // Mostrar estatísticas
+          fileStats.style.display = 'flex';
+          const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+          fileSize.textContent = `${sizeMB} MB`;
+          
+          // Simular estimativa de linhas (em aplicação real seria calculado)
+          const estimatedRows = Math.floor(Math.random() * 5000) + 1000;
+          rowCount.textContent = estimatedRows.toLocaleString();
+        }
+      }
+
+      // Submissão do formulário
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Mostrar container de progresso
+        if (!fileUpload.files.length) {
+          alert('Por favor, selecione um arquivo primeiro.');
+          return;
+        }
+
+        // Mostrar progresso
         progressoContainer.style.display = 'block';
         progressoBarra.style.width = '0%';
         progressoTexto.textContent = '0%';
@@ -144,7 +192,7 @@
             progressoBarra.style.width = '100%';
             statusMessage.innerHTML = '<i class="fas fa-check-circle success"></i> Processamento concluído com sucesso!';
             
-            // Submeter o formulário após pequeno delay para mostrar conclusão
+            // Submeter o formulário após pequeno delay
             setTimeout(() => {
               form.submit();
             }, 1000);
@@ -152,7 +200,7 @@
             progressoBarra.style.width = progresso + '%';
             progressoTexto.textContent = progresso + '%';
             
-            // Atualizar mensagens de status conforme o progresso
+            // Atualizar mensagens de status
             if (progresso < 30) {
               statusMessage.textContent = 'Lendo arquivo e validando dados...';
             } else if (progresso < 60) {
@@ -161,7 +209,7 @@
               statusMessage.textContent = 'Otimizando e preparando para download...';
             }
           }
-        }, 50);
+        }, 30);
       });
     });
   </script>
