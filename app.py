@@ -5,6 +5,7 @@ import pandas as pd
 from flask import Flask, request, render_template, send_file
 from werkzeug.utils import secure_filename
 from io import BytesIO
+from openpyxl import load_workbook
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -39,11 +40,24 @@ def index():
             return "Erro: apenas arquivos .xlsx válidos são permitidos.", 400
 
         try:
+            # Carregamento seguro com limite de linhas
             arquivo_bytes = arquivo.read()
-            # Proteção reforçada no pandas com engine definido
-            df = pd.read_excel(BytesIO(arquivo_bytes), engine="openpyxl")
+            wb = load_workbook(filename=BytesIO(arquivo_bytes), read_only=True)
+            ws = wb.active
+
+            data = []
+            for i, row in enumerate(ws.iter_rows(values_only=True)):
+                if i == 0:
+                    header = list(row)
+                else:
+                    data.append(list(row))
+                if i >= 1000:  # evita uso excessivo de memória
+                    break
+
+            df = pd.DataFrame(data, columns=header)
+
         except Exception as e:
-            return f"Erro ao processar o arquivo Excel: {str(e)}", 400
+            return f"Erro ao ler o arquivo Excel: {str(e)}", 400
 
         for col in df.columns:
             if df[col].dtype == 'object':
