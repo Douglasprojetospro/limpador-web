@@ -3,30 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Cotações de Frete</title>
+    <title>Limpeza de Dados Excel</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <h1><i class="fas fa-truck"></i> Sistema de Cotações de Frete</h1>
-            <p class="subtitle">Obtenha cotações de frete de múltiplas transportadoras de forma rápida e eficiente</p>
+            <h1><i class="fas fa-broom"></i> Limpeza de Dados Excel</h1>
+            <p class="subtitle">Padronize e limpe seus dados de forma automatizada</p>
         </header>
 
-        <div class="content-grid">
-            <section class="upload-section card">
-                <h2><i class="fas fa-file-upload"></i> Enviar Planilha</h2>
-                <p>Faça o upload do arquivo Excel com os dados para cotação de frete.</p>
-                
-                <form id="quoteForm" action="/process" method="POST" enctype="multipart/form-data">
+        <main class="main-content">
+            <div class="card">
+                <form id="uploadForm" action="/" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="file" class="file-label">
                             <i class="fas fa-file-excel"></i>
-                            <span id="file-name">Selecione o arquivo</span>
-                            <input type="file" id="file" name="file" accept=".xlsx,.xls" required>
+                            <span id="file-name">Selecione um arquivo Excel (.xlsx)</span>
+                            <input type="file" id="file" name="file" accept=".xlsx" required>
                         </label>
-                        <p class="file-info">Formatos suportados: .xlsx, .xls</p>
+                        <p class="file-info">Tamanho máximo: {{ max_size_mb }} MB</p>
+                    </div>
+
+                    <div class="options-section">
+                        <h3><i class="fas fa-sliders-h"></i> Opções de Limpeza</h3>
+                        
+                        <div class="option-group">
+                            <input type="checkbox" id="minusculo" name="minusculo" checked>
+                            <label for="minusculo">Converter texto para minúsculas</label>
+                        </div>
+                        
+                        <div class="option-group">
+                            <input type="checkbox" id="remover_especiais" name="remover_especiais" checked>
+                            <label for="remover_especiais">Remover caracteres especiais</label>
+                            <div class="chars-input-container">
+                                <input type="text" id="caracteres" name="caracteres" value=".,;:!?@#$%^&*_+=|\/<>[]{}()-'`~" class="chars-input">
+                                <span class="tooltip">?<span class="tooltiptext">Edite os caracteres que deseja remover</span></span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="progress-container" id="progressContainer" style="display: none;">
@@ -35,44 +50,25 @@
                     </div>
 
                     <button type="submit" class="submit-btn" id="submitBtn">
-                        <i class="fas fa-calculator"></i> Processar Cotações
+                        <i class="fas fa-magic"></i> Processar Arquivo
                     </button>
                 </form>
-            </section>
+            </div>
 
-            <section class="results-section card">
-                <h2><i class="fas fa-clipboard-list"></i> Resultados das Cotações</h2>
-                <div class="table-container">
-                    <table id="resultsTable">
-                        <thead>
-                            <tr>
-                                <th>Nota</th>
-                                <th>Descrição</th>
-                                <th>Transportadora</th>
-                                <th>Valor Frete</th>
-                                <th>Prazo (dias)</th>
-                                <th>ICMS</th>
-                                <th>Alíquota ICMS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Results will be populated here -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </div>
-
-        <section class="template-section card">
-            <h2><i class="fas fa-download"></i> Modelo de Planilha</h2>
-            <p>Baixe nosso modelo de planilha para garantir o formato correto dos dados.</p>
-            <a href="/download-template" class="download-btn">
-                <i class="fas fa-file-download"></i> Baixar Modelo
-            </a>
-        </section>
+            <div class="info-box">
+                <h3><i class="fas fa-info-circle"></i> Como funciona</h3>
+                <ol>
+                    <li>Selecione um arquivo Excel (.xlsx)</li>
+                    <li>Escolha as opções de limpeza</li>
+                    <li>Clique em "Processar Arquivo"</li>
+                    <li>Baixe o arquivo com os dados padronizados</li>
+                </ol>
+                <p class="note">Obs: Apenas as primeiras 1000 linhas serão processadas.</p>
+            </div>
+        </main>
 
         <footer class="footer">
-            <p>© 2023 Sistema de Cotações de Frete | Desenvolvido com Flask</p>
+            <p>© 2023 Limpeza de Dados Excel | Desenvolvido com Flask</p>
         </footer>
     </div>
 
