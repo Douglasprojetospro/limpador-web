@@ -5,24 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DataClean Pro | Ferramenta Profissional de Limpeza de Dados</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Adicionei estas cores CSS para o azul claro */
+    :root {
+      --azul-claro: #e6f2ff;
+      --azul-medio: #4da6ff;
+      --azul-escuro: #0066cc;
+    }
+  </style>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <div class="container">
-    <header class="header">
+    <header class="header" style="background: linear-gradient(135deg, var(--azul-claro) 0%, white 100%); border-bottom: 2px solid var(--azul-medio);">
       <div class="logo">
-        <i class="fas fa-broom"></i>
-        <h1>DataClean Pro</h1>
+        <i class="fas fa-broom" style="color: var(--azul-escuro);"></i>
+        <h1 style="color: var(--azul-escuro);">DataClean Pro</h1>
       </div>
-      <p class="subtitle">Ferramenta profissional de limpeza e padronização de dados</p>
+      <p class="subtitle" style="color: var(--azul-escuro);">Ferramenta profissional de limpeza e padronização de dados</p>
     </header>
 
     <main class="main-content">
       <form id="form-processamento" method="POST" enctype="multipart/form-data" class="upload-form">
         <div class="form-group">
-          <label for="file-upload" class="upload-area" id="upload-area">
-            <i class="fas fa-file-excel fa-3x"></i>
-            <h3>Selecione um arquivo Excel (.xlsx)</h3>
+          <label for="file-upload" class="upload-area" id="upload-area" style="border: 2px dashed var(--azul-medio);">
+            <i class="fas fa-file-excel fa-3x" style="color: var(--azul-escuro);"></i>
+            <h3 style="color: var(--azul-escuro);">Selecione um arquivo Excel (.xlsx)</h3>
             <p id="file-instructions">Arraste e solte seu arquivo aqui ou clique para selecionar</p>
             <span id="file-name" class="file-name-display"></span>
             <input type="file" id="file-upload" name="file" accept=".xlsx,.xls" required>
@@ -30,8 +38,8 @@
         </div>
 
         <div class="options-grid">
-          <div class="option-card">
-            <h3><i class="fas fa-font"></i> Transformação de Texto</h3>
+          <div class="option-card" style="border-top: 3px solid var(--azul-medio);">
+            <h3 style="color: var(--azul-escuro);"><i class="fas fa-font" style="color: var(--azul-escuro);"></i> Transformação de Texto</h3>
             
             <div class="option-item">
               <input type="checkbox" id="minusculo" name="minusculo" checked>
@@ -44,38 +52,39 @@
             </div>
           </div>
 
-          <div class="option-card">
-            <h3><i class="fas fa-filter"></i> Filtros Avançados</h3>
+          <div class="option-card" style="border-top: 3px solid var(--azul-medio);">
+            <h3 style="color: var(--azul-escuro);"><i class="fas fa-filter" style="color: var(--azul-escuro);"></i> Filtros Avançados</h3>
             
             <div class="form-group">
-              <label for="caracteres">
-                <i class="fas fa-code"></i> Caracteres para remover (regex)
+              <label for="caracteres" style="color: var(--azul-escuro);">
+                <i class="fas fa-code" style="color: var(--azul-escuro);"></i> Caracteres para remover (regex)
               </label>
               <input type="text" id="caracteres" name="caracteres" 
                      value="[.,;:!?@#$%^&*_+=|\\/<>\[\]{}()\"\'`~]" 
-                     placeholder="Insira a expressão regular">
+                     placeholder="Insira a expressão regular"
+                     style="border: 1px solid var(--azul-medio);">
               <small class="hint">Padrão regex para identificar caracteres a serem removidos</small>
             </div>
           </div>
         </div>
 
-        <div class="file-stats" id="file-stats">
+        <div class="file-stats" id="file-stats" style="background-color: var(--azul-claro);">
           <div class="stat-item">
-            <i class="fas fa-file"></i>
-            <span>Tamanho: <strong id="file-size">-</strong></span>
+            <i class="fas fa-file" style="color: var(--azul-escuro);"></i>
+            <span>Tamanho: <strong id="file-size" style="color: var(--azul-escuro);">-</strong></span>
           </div>
           <div class="stat-item">
-            <i class="fas fa-table"></i>
-            <span>Linhas estimadas: <strong id="row-count">-</strong></span>
+            <i class="fas fa-table" style="color: var(--azul-escuro);"></i>
+            <span>Linhas estimadas: <strong id="row-count" style="color: var(--azul-escuro);">-</strong></span>
           </div>
         </div>
 
         <div class="form-footer">
           <div class="file-info">
-            <i class="fas fa-info-circle"></i>
-            <span>Tamanho máximo: <strong>{{ max_size_mb }} MB</strong></span>
+            <i class="fas fa-info-circle" style="color: var(--azul-escuro);"></i>
+            <span>Tamanho máximo: <strong style="color: var(--azul-escuro);">{{ max_size_mb }} MB</strong></span>
           </div>
-          <button type="submit" class="submit-btn">
+          <button type="submit" class="submit-btn" style="background-color: var(--azul-escuro);">
             <i class="fas fa-magic"></i> Processar e Baixar
           </button>
         </div>
@@ -83,24 +92,24 @@
 
       <div id="progresso-container" class="progress-container">
         <div class="progress-header">
-          <h3><i class="fas fa-sync-alt fa-spin"></i> Processando seu arquivo</h3>
-          <span id="progresso-texto">0%</span>
+          <h3 style="color: var(--azul-escuro);"><i class="fas fa-sync-alt fa-spin" style="color: var(--azul-escuro);"></i> Processando seu arquivo</h3>
+          <span id="progresso-texto" style="color: var(--azul-escuro);">0%</span>
         </div>
         <div class="progress-bar">
-          <div id="progresso-barra" class="progress-fill"></div>
+          <div id="progresso-barra" class="progress-fill" style="background-color: var(--azul-medio);"></div>
         </div>
         <div class="progress-details">
-          <p id="status-message">Preparando para iniciar o processamento...</p>
+          <p id="status-message" style="color: var(--azul-escuro);">Preparando para iniciar o processamento...</p>
         </div>
       </div>
     </main>
 
-    <footer class="footer">
-      <p>© 2023 DataClean Pro | Versão 1.0</p>
+    <footer class="footer" style="border-top: 1px solid var(--azul-medio);">
+      <p style="color: var(--azul-escuro);">© 2023 DataClean Pro | Versão 1.0</p>
       <div class="footer-links">
-        <a href="#"><i class="fas fa-question-circle"></i> Ajuda</a>
-        <a href="#"><i class="fas fa-envelope"></i> Contato</a>
-        <a href="#"><i class="fas fa-shield-alt"></i> Privacidade</a>
+        <a href="#" style="color: var(--azul-escuro);"><i class="fas fa-question-circle" style="color: var(--azul-escuro);"></i> Ajuda</a>
+        <a href="#" style="color: var(--azul-escuro);"><i class="fas fa-envelope" style="color: var(--azul-escuro);"></i> Contato</a>
+        <a href="#" style="color: var(--azul-escuro);"><i class="fas fa-shield-alt" style="color: var(--azul-escuro);"></i> Privacidade</a>
       </div>
     </footer>
   </div>
@@ -128,15 +137,21 @@
       uploadArea.addEventListener('dragover', (e) => {
         e.preventDefault();
         uploadArea.classList.add('dragover');
+        uploadArea.style.borderColor = 'var(--azul-escuro)';
+        uploadArea.style.backgroundColor = 'var(--azul-claro)';
       });
 
       uploadArea.addEventListener('dragleave', () => {
         uploadArea.classList.remove('dragover');
+        uploadArea.style.borderColor = 'var(--azul-medio)';
+        uploadArea.style.backgroundColor = '';
       });
 
       uploadArea.addEventListener('drop', (e) => {
         e.preventDefault();
         uploadArea.classList.remove('dragover');
+        uploadArea.style.borderColor = 'var(--azul-medio)';
+        uploadArea.style.backgroundColor = '';
         if (e.dataTransfer.files.length) {
           fileUpload.files = e.dataTransfer.files;
           handleFileSelection();
