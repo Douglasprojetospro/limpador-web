@@ -1,307 +1,235 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DataClean Pro | Ferramenta de Limpeza de Dados</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
+<style>
+    :root {
+        --primary-color: #0d6efd;
+        --primary-hover: #0b5ed7;
+        --primary-light: rgba(13, 110, 253, 0.1);
+        --text-color: #212529;
+        --text-light: #6c757d;
+        --light-gray: #f8f9fa;
+        --medium-gray: #e9ecef;
+        --white: #ffffff;
+        --dark: #212529;
+        --border-radius: 10px;
+        --border-radius-sm: 5px;
+        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --box-shadow-lg: 0 8px 15px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        background-color: var(--light-gray);
+        color: var(--text-color);
+        line-height: 1.6;
+    }
+
+    .header {
+        background-color: var(--primary-color);
+        color: var(--white);
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .logo i {
+        font-size: 2.5rem;
+    }
+
+    .logo h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .subtitle {
+        font-size: 1.25rem;
+        opacity: 0.9;
+    }
+
+    .card {
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        border: none;
+        margin-bottom: 1.5rem;
+        transition: var(--transition);
+    }
+
+    .card:hover {
+        box-shadow: var(--box-shadow-lg);
+    }
+
+    .card-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        font-weight: 600;
+    }
+
+    .card-title i {
+        font-size: 1.5rem;
+    }
+
+    .upload-area {
+        border: 2px dashed var(--medium-gray);
+        border-radius: var(--border-radius);
+        padding: 2.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: var(--transition);
+        margin-bottom: 1.5rem;
+    }
+
+    .upload-area:hover {
+        border-color: var(--primary-color);
+        background-color: var(--primary-light);
+    }
+
+    .upload-icon {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .file-info {
+        margin-top: 1rem;
+        font-size: 0.95rem;
+        color: var(--text-light);
+        transition: var(--transition);
+    }
+
+    .file-input {
+        display: none;
+    }
+
+    .option-item {
+        margin-bottom: 0.75rem;
+    }
+
+    .option-item input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        margin-right: 0.5rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius-sm);
+        font-weight: 500;
+        transition: var(--transition);
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+    }
+
+    .btn-outline-primary {
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .btn-outline-primary:hover {
+        background-color: var(--primary-color);
+        color: var(--white);
+    }
+
+    .step-number {
+        background-color: var(--primary-color);
+        color: var(--white);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-weight: bold;
+    }
+
+    .step-title {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+    }
+
+    .progress-container {
+        display: none;
+        margin: 1.5rem 0;
+    }
+
+    .progress-text {
+        text-align: center;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    .progress {
+        height: 10px;
+        border-radius: 5px;
+    }
+
+    .progress-bar {
+        background-color: var(--primary-color);
+        transition: width 0.6s ease;
+    }
+
+    .footer {
+        background-color: var(--dark);
+        color: var(--white);
+        padding: 2rem 0;
+        margin-top: 3rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
         .header {
-            background-color: #0d6efd;
-            color: white;
             padding: 2rem 0;
-            margin-bottom: 2rem;
-            border-radius: 0 0 10px 10px;
         }
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-        .btn-primary {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-        }
-        .btn-outline-primary {
-            color: #0d6efd;
-            border-color: #0d6efd;
-        }
-        .btn-outline-primary:hover {
-            background-color: #0d6efd;
-            color: white;
-        }
-        .upload-area {
-            border: 2px dashed #dee2e6;
-            border-radius: 10px;
-            padding: 2rem;
+        
+        .logo {
+            flex-direction: column;
             text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
+            gap: 0.5rem;
         }
-        .upload-area:hover {
-            border-color: #0d6efd;
-            background-color: rgba(13, 110, 253, 0.05);
-        }
-        .upload-icon {
-            font-size: 2.5rem;
-            color: #0d6efd;
-            margin-bottom: 1rem;
-        }
-        .file-info {
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-        .file-input {
-            display: none;
-        }
-        .features-icon {
+        
+        .logo h1 {
             font-size: 2rem;
-            color: #0d6efd;
-            margin-bottom: 1rem;
         }
-        .option-item {
-            margin-bottom: 0.5rem;
+        
+        .subtitle {
+            font-size: 1.1rem;
         }
-        .step-number {
-            background-color: #0d6efd;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-weight: bold;
+        
+        .upload-area {
+            padding: 1.5rem;
         }
-        .step-title {
-            color: #0d6efd;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
+    }
+
+    @media (max-width: 576px) {
+        .logo h1 {
+            font-size: 1.75rem;
         }
-        .progress-container {
-            display: none;
-            margin-top: 20px;
-            margin-bottom: 20px;
+        
+        .subtitle {
+            font-size: 1rem;
         }
-        .progress-text {
-            text-align: center;
-            margin-bottom: 5px;
-            font-weight: 500;
+        
+        .card-title {
+            font-size: 1.25rem;
         }
-        .progress-bar {
-            transition: width 0.3s ease;
-            height: 25px;
-            border-radius: 5px;
-        }
-    </style>
-</head>
-<body>
-    <div class="header text-center">
-        <div class="container">
-            <div class="d-flex justify-content-center align-items-center mb-3">
-                <i class="bi bi-brush fs-1 me-3"></i>
-                <h1 class="display-4 fw-bold">DataClean Pro</h1>
-            </div>
-            <p class="lead">Ferramenta profissional de limpeza e padronização de dados</p>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="row mb-4">
-            <div class="col-md-8 mx-auto">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title text-center"><i class="bi bi-upload me-2"></i>Enviar Planilha</h5>
-                        <p class="card-text text-center mb-4">Faça o upload do arquivo Excel com os dados para limpeza e padronização</p>
-                        
-                        <form id="form-processamento" method="POST" enctype="multipart/form-data" action="/">
-                            <label class="upload-area" id="upload-area">
-                                <i class="bi bi-file-excel upload-icon"></i>
-                                <p>Selecione o arquivo Excel (.xlsx)</p>
-                                <span id="file-name" class="file-info">Nenhum arquivo selecionado</span>
-                                <input type="file" id="file-upload" class="file-input" name="file" accept=".xlsx" required>
-                            </label>
-
-                            <div class="row mt-3">
-                                <div class="col-md-6">
-                                    <h5><i class="bi bi-fonts me-2"></i>Transformação de Texto</h5>
-                                    <div class="option-item form-check">
-                                        <input class="form-check-input" type="checkbox" id="minusculo" name="minusculo" checked>
-                                        <label class="form-check-label" for="minusculo">Converter para minúsculo</label>
-                                    </div>
-                                    <div class="option-item form-check">
-                                        <input class="form-check-input" type="checkbox" id="remover_especiais" name="remover_especiais" checked>
-                                        <label class="form-check-label" for="remover_especiais">Remover acentos e caracteres especiais</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <h5><i class="bi bi-funnel me-2"></i>Filtros</h5>
-                                    <div class="option-item form-check">
-                                        <input class="form-check-input" type="checkbox" id="remover_espacos" name="remover_espacos" checked>
-                                        <label class="form-check-label" for="remover_espacos">Remover espaços extras</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="progress-container" class="progress-container">
-                                <div id="progress-text" class="progress-text">Processando: 0%</div>
-                                <div class="progress">
-                                    <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%"></div>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary mt-3 w-100" id="process-button">
-                                <i class="bi bi-magic"></i> Processar e Baixar
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <h5 class="card-title"><i class="bi bi-file-earmark-excel me-2"></i>Modelo de Planilha</h5>
-                        <p class="card-text">Baixe nosso modelo de planilha para garantir o formato correto dos dados</p>
-                        <a href="#" class="btn btn-outline-primary">
-                            <i class="bi bi-download"></i> Baixar Modelo
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <h5 class="card-title"><i class="bi bi-info-circle me-2"></i>Sobre a Ferramenta</h5>
-                        <p class="card-text">O DataClean Pro ajuda você a padronizar e limpar seus dados de forma rápida e eficiente</p>
-                        <a href="#" class="btn btn-outline-primary">
-                            <i class="bi bi-question-circle"></i> Saiba Mais
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mt-4">
-            <div class="col-12 text-center mb-4">
-                <h2><i class="bi bi-stars me-2"></i>Como Funciona</h2>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 text-center">
-                    <div class="card-body">
-                        <div class="step-number">1</div>
-                        <h5 class="step-title">Upload do Arquivo</h5>
-                        <p class="card-text">Envie sua planilha Excel com os dados que precisam ser limpos</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 text-center">
-                    <div class="card-body">
-                        <div class="step-number">2</div>
-                        <h5 class="step-title">Processamento</h5>
-                        <p class="card-text">Nosso sistema aplica todas as transformações selecionadas</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 text-center">
-                    <div class="card-body">
-                        <div class="step-number">3</div>
-                        <h5 class="step-title">Resultados</h5>
-                        <p class="card-text">Receba sua planilha com os dados limpos e padronizados</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container text-center">
-            <p class="mb-0">DataClean Pro &copy; 2023 - Todos os direitos reservados</p>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const fileUpload = document.getElementById('file-upload');
-            const uploadArea = document.getElementById('upload-area');
-            const fileName = document.getElementById('file-name');
-            const form = document.getElementById('form-processamento');
-            const progressContainer = document.getElementById('progress-container');
-            const progressBar = document.getElementById('progress-bar');
-            const progressText = document.getElementById('progress-text');
-            const processButton = document.getElementById('process-button');
-
-            // Drag and drop
-            uploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadArea.style.borderColor = '#0d6efd';
-                uploadArea.style.backgroundColor = 'rgba(13, 110, 253, 0.05)';
-            });
-
-            uploadArea.addEventListener('dragleave', () => {
-                uploadArea.style.borderColor = '#dee2e6';
-                uploadArea.style.backgroundColor = '';
-            });
-
-            uploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadArea.style.borderColor = '#dee2e6';
-                uploadArea.style.backgroundColor = '';
-                
-                if (e.dataTransfer.files.length) {
-                    fileUpload.files = e.dataTransfer.files;
-                    updateFileName();
-                }
-            });
-
-            // File selection
-            fileUpload.addEventListener('change', updateFileName);
-
-            function updateFileName() {
-                if (fileUpload.files.length) {
-                    fileName.textContent = fileUpload.files[0].name;
-                    fileName.style.color = '#0d6efd';
-                    fileName.style.fontWeight = '500';
-                } else {
-                    fileName.textContent = 'Nenhum arquivo selecionado';
-                    fileName.style.color = '#6c757d';
-                    fileName.style.fontWeight = 'normal';
-                }
-            }
-
-            // Form submission with progress
-            form.addEventListener('submit', function() {
-                // Show progress bar
-                progressContainer.style.display = 'block';
-                processButton.disabled = true;
-                processButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processando...';
-                
-                // Simulate progress while the form submits
-                let progress = 0;
-                const interval = setInterval(() => {
-                    progress += Math.random() * 10;
-                    if (progress > 90) progress = 90; // Don't complete until actual processing is done
-                    
-                    progressBar.style.width = progress + '%';
-                    progressText.textContent = 'Processando: ' + Math.round(progress) + '%';
-                }, 300);
-                
-                // The form will submit normally and the page will refresh with the download
-                // The interval will be cleared when the page unloads
-            });
-        });
-    </script>
-</body>
-</html>
+    }
+</style>
