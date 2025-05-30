@@ -1,3 +1,4 @@
+html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -85,6 +86,16 @@
             margin-bottom: 0.5rem;
             font-weight: 600;
         }
+        .progress-container {
+            display: none;
+            margin-top: 20px;
+        }
+        .progress-text {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
     </style>
 </head>
 <body>
@@ -135,7 +146,15 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary mt-3 w-100">
+                            <!-- Barra de progresso -->
+                            <div id="progress-container" class="progress-container">
+                                <div class="progress">
+                                    <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <div id="progress-text" class="progress-text">Processando: 0%</div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary mt-3 w-100" id="process-button">
                                 <i class="bi bi-magic"></i> Processar e Baixar
                             </button>
                         </form>
@@ -215,6 +234,11 @@
             const fileUpload = document.getElementById('file-upload');
             const uploadArea = document.getElementById('upload-area');
             const fileName = document.getElementById('file-name');
+            const form = document.getElementById('form-processamento');
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const processButton = document.getElementById('process-button');
 
             // Drag and drop
             uploadArea.addEventListener('dragover', (e) => {
@@ -252,6 +276,44 @@
                     fileName.style.color = '#6c757d';
                     fileName.style.fontWeight = 'normal';
                 }
+            }
+
+            // Form submission with progress simulation
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Show progress bar
+                progressContainer.style.display = 'block';
+                processButton.disabled = true;
+                
+                // Simulate progress (in a real app, you would use actual upload/progress events)
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 10;
+                    if (progress > 100) progress = 100;
+                    
+                    progressBar.style.width = progress + '%';
+                    progressText.textContent = 'Processando: ' + Math.round(progress) + '%';
+                    
+                    if (progress === 100) {
+                        clearInterval(interval);
+                        progressText.textContent = 'Processamento completo! Preparando download...';
+                        
+                        // In a real application, you would submit the form here or handle the file processing
+                        // For demo purposes, we'll reset after a short delay
+                        setTimeout(() => {
+                            alert('Arquivo processado com sucesso! (Esta é uma demonstração)');
+                            resetForm();
+                        }, 1000);
+                    }
+                }, 300);
+            });
+
+            function resetForm() {
+                progressContainer.style.display = 'none';
+                progressBar.style.width = '0%';
+                progressText.textContent = 'Processando: 0%';
+                processButton.disabled = false;
             }
         });
     </script>
