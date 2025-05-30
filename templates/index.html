@@ -38,9 +38,14 @@
                             <input type="checkbox" id="remover_especiais" name="remover_especiais" checked>
                             <label for="remover_especiais">Remover caracteres especiais</label>
                             <div class="chars-input-container">
-                                <input type="text" id="caracteres" name="caracteres" value=".,;:!?@#$%^&*_+=|\/<>[]{}()-'`~" class="chars-input">
+                                <input type="text" id="caracteres" name="caracteres" value=".,;:!?@#$%^&*_+=|\\/<>[]{}()-'`~" class="chars-input">
                                 <span class="tooltip">?<span class="tooltiptext">Edite os caracteres que deseja remover</span></span>
                             </div>
+                        </div>
+
+                        <div class="option-group">
+                            <input type="checkbox" id="remover_espacos" name="remover_espacos">
+                            <label for="remover_espacos">Remover espaços extras</label>
                         </div>
                     </div>
 
@@ -68,10 +73,36 @@
         </main>
 
         <footer class="footer">
-            <p>© 2023 Limpeza de Dados Excel | Desenvolvido com Flask</p>
+            <p>© 2025 Limpeza de Dados Excel | Desenvolvido com Flask</p>
         </footer>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        const fileInput = document.getElementById("file");
+        const fileNameSpan = document.getElementById("file-name");
+
+        fileInput.addEventListener("change", function () {
+            fileNameSpan.textContent = this.files[0].name;
+        });
+
+        const form = document.getElementById("uploadForm");
+        const progressBar = document.getElementById("progressBar");
+        const progressText = document.getElementById("progressText");
+        const progressContainer = document.getElementById("progressContainer");
+
+        form.addEventListener("submit", function () {
+            progressContainer.style.display = "block";
+            let width = 0;
+            let interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                } else {
+                    width += 10;
+                    progressBar.style.width = width + "%";
+                    progressText.innerText = width + "%";
+                }
+            }, 200);
+        });
+    </script>
 </body>
 </html>
