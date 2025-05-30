@@ -8,6 +8,7 @@ from io import BytesIO
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # Limite: 10 MB
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 def remover_acentos(texto):
@@ -30,7 +31,7 @@ def index():
         if not arquivo:
             return "Nenhum arquivo enviado", 400
 
-        # Correção importante: ler o arquivo em memória
+        # Lê o conteúdo do arquivo para evitar erro de leitura
         arquivo_bytes = arquivo.read()
         df = pd.read_excel(BytesIO(arquivo_bytes))
 
@@ -59,4 +60,9 @@ def index():
             mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
 
-    return render_template('index.html')
+    return render_template('index.html', max_size_mb=10)
+
+# Tratamento para arquivo maior que o permitido
+@app.errorhandler(413)
+def too_large(e):
+    return "Erro: o arquivo excede o tamanho máximo permitido (10 MB).", 413
