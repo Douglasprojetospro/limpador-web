@@ -1,318 +1,526 @@
-:root {
-  --primary-color: #4361ee;
-  --primary-hover: #3a56d4;
-  --secondary-color: #3f37c9;
-  --text-color: #2b2d42;
-  --light-gray: #f8f9fa;
-  --medium-gray: #e9ecef;
-  --dark-gray: #6c757d;
-  --success-color: #4cc9f0;
-  --border-radius: 8px;
-  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --transition: all 0.25s ease;
-}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataClean Pro | Ferramenta Profissional de Limpeza de Dados</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-hover: #3a56d4;
+            --secondary-color: #3f37c9;
+            --text-color: #2b2d42;
+            --light-gray: #f8f9fa;
+            --medium-gray: #e9ecef;
+            --dark-gray: #6c757d;
+            --success-color: #4cc9f0;
+            --border-radius: 10px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.25s ease;
+        }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-body {
-  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-  background-color: #f5f7ff;
-  color: var(--text-color);
-  line-height: 1.6;
-  padding: 0;
-  min-height: 100vh;
-}
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7ff;
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
 
-.container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-}
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
 
-/* Header */
-.header {
-  text-align: center;
-  margin-bottom: 2.5rem;
-  padding: 0 1rem;
-}
+        /* Header */
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2.5rem 0;
+            margin-bottom: 2.5rem;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
 
-.logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
 
-.logo i {
-  font-size: 2rem;
-  color: var(--primary-color);
-}
+        .logo i {
+            font-size: 2.2rem;
+        }
 
-.logo h1 {
-  margin: 0;
-  font-size: 1.8rem;
-  color: var(--primary-color);
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
+        .logo h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
 
-.subtitle {
-  color: var(--dark-gray);
-  font-size: 1.05rem;
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: 1.5;
-}
+        .subtitle {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
 
-/* Sections */
-.section {
-  background-color: white;
-  border-radius: var(--border-radius);
-  padding: 2rem;
-  box-shadow: var(--box-shadow);
-  margin-bottom: 1.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
+        /* Cards */
+        .card {
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: none;
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+        }
 
-.section-title {
-  color: var(--primary-color);
-  margin-bottom: 1.25rem;
-  font-size: 1.4rem;
-  text-align: center;
-  font-weight: 600;
-}
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
 
-.section p {
-  text-align: center;
-  color: var(--dark-gray);
-  margin-bottom: 1.5rem;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
+        .card-body {
+            padding: 2rem;
+        }
 
-/* Upload Area */
-.upload-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
+        .card-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
 
-.upload-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2.5rem 2rem;
-  border: 2px dashed var(--medium-gray);
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  transition: var(--transition);
-  text-align: center;
-  background-color: rgba(67, 97, 238, 0.02);
-}
+        .card-text {
+            color: var(--dark-gray);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
 
-.upload-area:hover {
-  border-color: var(--primary-color);
-  background-color: rgba(67, 97, 238, 0.05);
-  transform: translateY(-2px);
-}
+        /* Upload Area */
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
 
-.upload-area i {
-  font-size: 2.2rem;
-  color: var(--primary-color);
-  margin-bottom: 0.75rem;
-}
+        .upload-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem;
+            border: 2px dashed var(--medium-gray);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
 
-.upload-area p {
-  color: var(--text-color);
-  margin-bottom: 0.25rem;
-  font-weight: 500;
-}
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
 
-.file-info {
-  font-size: 0.9rem;
-  color: var(--dark-gray);
-  transition: var(--transition);
-}
+        .upload-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
 
-.file-input {
-  display: none;
-}
+        .file-info {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            transition: var(--transition);
+        }
 
-/* Options Grid */
-.options-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-}
+        .file-input {
+            display: none;
+        }
 
-.options-grid h3 {
-  color: var(--primary-color);
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
+        /* Options */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
 
-.option-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
+        .options-grid h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-.option-item input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--primary-color);
-  cursor: pointer;
-}
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
 
-.option-item label {
-  cursor: pointer;
-  font-size: 0.95rem;
-}
+        .option-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
 
-/* Buttons */
-.btn {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 0.85rem 1.75rem;
-  border-radius: var(--border-radius);
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  text-decoration: none;
-  font-size: 1rem;
-  box-shadow: 0 2px 4px rgba(67, 97, 238, 0.2);
-}
+        .option-item label {
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: var(--text-color);
+        }
 
-.btn:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(67, 97, 238, 0.25);
-}
+        /* Buttons */
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.85rem 1.75rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1rem;
+            box-shadow: 0 2px 4px rgba(67, 97, 238, 0.2);
+        }
 
-.btn-block {
-  display: block;
-  width: 100%;
-  padding: 0.9rem;
-}
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.25);
+        }
 
-.btn i {
-  font-size: 0.9em;
-}
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
 
-/* Steps */
-.steps {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
-}
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
 
-.step {
-  text-align: center;
-  padding: 1.5rem 1rem;
-  background-color: rgba(67, 97, 238, 0.03);
-  border-radius: var(--border-radius);
-  transition: var(--transition);
-}
+        .btn-block {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+        }
 
-.step:hover {
-  transform: translateY(-5px);
-  background-color: rgba(67, 97, 238, 0.08);
-}
+        /* Steps */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
 
-.step-number {
-  background-color: var(--primary-color);
-  color: white;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 1rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-}
+        .step {
+            text-align: center;
+            padding: 1.75rem 1.25rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
 
-.step-title {
-  color: var(--primary-color);
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  font-size: 1.1rem;
-}
+        .step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
 
-.step p {
-  color: var(--dark-gray);
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin-bottom: 0;
-}
+        .step-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-weight: bold;
+        }
 
-/* Footer */
-.footer {
-  text-align: center;
-  margin-top: 3rem;
-  padding-top: 2rem;
-  color: var(--dark-gray);
-  font-size: 0.85rem;
-  border-top: 1px solid var(--medium-gray);
-}
+        .step-title {
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .container {
-    padding: 1.5rem 1rem;
-  }
-  
-  .section {
-    padding: 1.5rem;
-  }
-  
-  .steps {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .step {
-    padding: 1.25rem;
-  }
-  
-  .logo h1 {
-    font-size: 1.6rem;
-  }
-  
-  .subtitle {
-    font-size: 1rem;
-  }
-}
+        .step p {
+            color: var(--dark-gray);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
 
-@media (max-width: 480px) {
-  .upload-area {
-    padding: 2rem 1rem;
-  }
-  
-  .options-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .btn {
-    padding: 0.8rem 1.5rem;
-    font-size: 0.95rem;
-  }
-}
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .header {
+                padding: 2rem 1rem;
+                border-radius: 0;
+            }
+            
+            .logo h1 {
+                font-size: 1.8rem;
+            }
+            
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .upload-area {
+                padding: 2rem 1rem;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .steps {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .logo {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .logo i {
+                font-size: 2rem;
+            }
+            
+            .logo h1 {
+                font-size: 1.6rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .btn {
+                padding: 0.8rem 1.25rem;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header text-center">
+        <div class="container">
+            <div class="logo">
+                <i class="bi bi-brush"></i>
+                <h1>DataClean Pro</h1>
+            </div>
+            <p class="subtitle">Ferramenta profissional de limpeza e padronização de dados</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-lg-8 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-upload"></i> Enviar Planilha</h5>
+                        <p class="card-text">Faça o upload do arquivo Excel com os dados para limpeza e padronização</p>
+                        
+                        <form id="form-processamento" class="upload-form" method="POST" enctype="multipart/form-data">
+                            <label class="upload-area" id="upload-area">
+                                <i class="bi bi-file-excel upload-icon"></i>
+                                <p>Selecione o arquivo Excel (.xlsx)</p>
+                                <span id="file-name" class="file-info">Nenhum arquivo selecionado</span>
+                                <input type="file" id="file-upload" class="file-input" name="file" accept=".xlsx,.xls" required>
+                            </label>
+
+                            <div class="options-grid">
+                                <div>
+                                    <h3><i class="bi bi-fonts"></i> Transformação de Texto</h3>
+                                    
+                                    <div class="option-item">
+                                        <input type="checkbox" id="minusculo" name="minusculo" checked>
+                                        <label for="minusculo">Converter para minúsculo</label>
+                                    </div>
+                                    
+                                    <div class="option-item">
+                                        <input type="checkbox" id="remover_especiais" name="remover_especiais" checked>
+                                        <label for="remover_especiais">Remover acentos e especiais</label>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3><i class="bi bi-funnel"></i> Filtros</h3>
+                                    
+                                    <div class="option-item">
+                                        <input type="checkbox" id="remover_espacos" name="remover_espacos" checked>
+                                        <label for="remover_espacos">Remover espaços extras</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-block">
+                                <i class="bi bi-magic"></i> Processar e Baixar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title"><i class="bi bi-file-earmark-excel"></i> Modelo de Planilha</h5>
+                        <p class="card-text">Baixe nosso modelo de planilha para garantir o formato correto dos dados</p>
+                        <a href="#" class="btn btn-outline">
+                            <i class="bi bi-download"></i> Baixar Modelo
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title"><i class="bi bi-info-circle"></i> Sobre a Ferramenta</h5>
+                        <p class="card-text">Saiba mais sobre como nossa ferramenta pode ajudar seu negócio</p>
+                        <a href="#" class="btn btn-outline">
+                            <i class="bi bi-question-circle"></i> Saiba Mais
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center"><i class="bi bi-stars"></i> Como Funciona</h5>
+                        
+                        <div class="steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <h3 class="step-title">Upload do Arquivo</h3>
+                                <p>Envie sua planilha Excel com os dados que precisam ser limpos</p>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <h3 class="step-title">Processamento</h3>
+                                <p>Nosso sistema aplica todas as transformações selecionadas</p>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <h3 class="step-title">Resultados</h3>
+                                <p>Receba sua planilha com os dados limpos e padronizados</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>DataClean Pro © 2023 - Todos os direitos reservados</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileUpload = document.getElementById('file-upload');
+            const uploadArea = document.getElementById('upload-area');
+            const fileName = document.getElementById('file-name');
+
+            // Drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.style.borderColor = 'var(--primary-color)';
+                uploadArea.style.backgroundColor = 'rgba(67, 97, 238, 0.08)';
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.style.borderColor = 'var(--medium-gray)';
+                uploadArea.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.style.borderColor = 'var(--medium-gray)';
+                uploadArea.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+                
+                if (e.dataTransfer.files.length) {
+                    fileUpload.files = e.dataTransfer.files;
+                    updateFileName();
+                }
+            });
+
+            // File selection
+            fileUpload.addEventListener('change', updateFileName);
+
+            function updateFileName() {
+                if (fileUpload.files.length) {
+                    fileName.textContent = fileUpload.files[0].name;
+                    fileName.style.color = 'var(--primary-color)';
+                    fileName.style.fontWeight = '600';
+                } else {
+                    fileName.textContent = 'Nenhum arquivo selecionado';
+                    fileName.style.color = 'var(--dark-gray)';
+                    fileName.style.fontWeight = 'normal';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
