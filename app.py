@@ -32,15 +32,15 @@ def separar_num_letra(texto):
 def index():
     if request.method == 'POST':
         arquivo = request.files.get('file')
-        caracteres = request.form.get('caracteres', r'[.,;:!?@#$%^&*_+=|\\/<>\[\]{}()\-"\'`~]')
+        caracteres = request.form.get('caracteres', '.,;:!?@#$%^&*_+=|\\/<>[]{}()-\'"`~')
         minusculo = request.form.get('minusculo') == 'on'
         remover_especiais = request.form.get('remover_especiais') == 'on'
+        remover_espacos = request.form.get('remover_espacos') == 'on'
 
         if not arquivo or not eh_arquivo_valido(arquivo):
             return "Erro: apenas arquivos .xlsx válidos são permitidos.", 400
 
         try:
-            # Carregamento seguro com limite de linhas
             arquivo_bytes = arquivo.read()
             wb = load_workbook(filename=BytesIO(arquivo_bytes), read_only=True)
             ws = wb.active
@@ -51,7 +51,7 @@ def index():
                     header = list(row)
                 else:
                     data.append(list(row))
-                if i >= 1000:  # evita uso excessivo de memória
+                if i >= 1000:
                     break
 
             df = pd.DataFrame(data, columns=header)
@@ -67,11 +67,14 @@ def index():
                     df[col] = df[col].str.lower()
 
                 if remover_especiais:
+                    padrao_regex = f"[{''.join(re.escape(c) for c in caracteres)}]"
+                    df[col] = df[col].apply(lambda x: re.sub(padrao_regex, ' ', x))
                     df[col] = df[col].apply(remover_acentos)
-                    df[col] = df[col].apply(lambda x: re.sub(caracteres, ' ', x))
 
                 df[col] = df[col].apply(separar_num_letra)
-                df[col] = df[col].str.replace(r'\s+', ' ', regex=True).str.strip()
+
+                if remover_espacos:
+                    df[col] = df[col].str.replace(r'\s+', ' ', regex=True).str.strip()
 
         output = BytesIO()
         df.to_excel(output, index=False)
@@ -89,3 +92,6 @@ def index():
 @app.errorhandler(413)
 def too_large(e):
     return "Erro: o arquivo excede o tamanho máximo permitido (10 MB).", 413
+
+if __name__ == '__main__':
+    app.run(debug=True)
