@@ -8,7 +8,7 @@
 <body>
   <div class="container">
     <h1>🧹 Ferramenta de Limpeza de Dados</h1>
-    <form method="POST" enctype="multipart/form-data">
+    <form id="form-processamento" method="POST" enctype="multipart/form-data">
       <label>Arquivo Excel:</label>
       <input type="file" name="file" accept=".xlsx,.xls" required>
 
@@ -20,6 +20,36 @@
 
       <button type="submit">Processar e Baixar</button>
     </form>
+
+    <div id="progresso-container">
+      <div id="progresso-barra"></div>
+      <p id="progresso-texto">Processando...</p>
+    </div>
   </div>
+
+  <script>
+    const form = document.getElementById('form-processamento');
+    const progressoContainer = document.getElementById('progresso-container');
+    const progressoBarra = document.getElementById('progresso-barra');
+    const progressoTexto = document.getElementById('progresso-texto');
+
+    form.addEventListener('submit', () => {
+      progressoContainer.style.display = 'block';
+      progressoBarra.style.width = '0%';
+      progressoTexto.textContent = 'Iniciando...';
+
+      let progresso = 0;
+      const intervalo = setInterval(() => {
+        if (progresso >= 90) {
+          clearInterval(intervalo);
+          progressoTexto.textContent = 'Finalizando...';
+        } else {
+          progresso += 10;
+          progressoBarra.style.width = progresso + '%';
+          progressoTexto.textContent = `Processando... ${progresso}%`;
+        }
+      }, 300);
+    });
+  </script>
 </body>
 </html>
