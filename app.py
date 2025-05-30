@@ -30,7 +30,9 @@ def index():
         if not arquivo:
             return "Nenhum arquivo enviado", 400
 
-        df = pd.read_excel(arquivo)
+        # Correção importante: ler o arquivo em memória
+        arquivo_bytes = arquivo.read()
+        df = pd.read_excel(BytesIO(arquivo_bytes))
 
         for col in df.columns:
             if df[col].dtype == 'object':
@@ -50,6 +52,11 @@ def index():
         df.to_excel(output, index=False)
         output.seek(0)
 
-        return send_file(output, as_attachment=True, download_name='dados_processados.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        return send_file(
+            output,
+            as_attachment=True,
+            download_name='dados_processados.xlsx',
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
 
     return render_template('index.html')
