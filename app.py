@@ -40,7 +40,8 @@ def index():
 
         try:
             arquivo_bytes = arquivo.read()
-            df = pd.read_excel(BytesIO(arquivo_bytes))
+            # Proteção reforçada no pandas com engine definido
+            df = pd.read_excel(BytesIO(arquivo_bytes), engine="openpyxl")
         except Exception as e:
             return f"Erro ao processar o arquivo Excel: {str(e)}", 400
 
