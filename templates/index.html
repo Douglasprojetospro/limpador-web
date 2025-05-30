@@ -121,12 +121,12 @@
                         <h5 class="card-title text-center"><i class="bi bi-upload me-2"></i>Enviar Planilha</h5>
                         <p class="card-text text-center mb-4">Faça o upload do arquivo Excel com os dados para limpeza e padronização</p>
                         
-                        <form id="form-processamento" method="POST" enctype="multipart/form-data">
+                        <form id="form-processamento" method="POST" enctype="multipart/form-data" action="/">
                             <label class="upload-area" id="upload-area">
                                 <i class="bi bi-file-excel upload-icon"></i>
                                 <p>Selecione o arquivo Excel (.xlsx)</p>
                                 <span id="file-name" class="file-info">Nenhum arquivo selecionado</span>
-                                <input type="file" id="file-upload" class="file-input" name="file" accept=".xlsx,.xls" required>
+                                <input type="file" id="file-upload" class="file-input" name="file" accept=".xlsx" required>
                             </label>
 
                             <div class="row mt-3">
@@ -150,7 +150,6 @@
                                 </div>
                             </div>
 
-                            <!-- Barra de progresso adicionada aqui -->
                             <div id="progress-container" class="progress-container">
                                 <div id="progress-text" class="progress-text">Processando: 0%</div>
                                 <div class="progress">
@@ -282,43 +281,25 @@
                 }
             }
 
-            // Form submission with progress simulation
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
+            // Form submission with progress
+            form.addEventListener('submit', function() {
                 // Show progress bar
                 progressContainer.style.display = 'block';
                 processButton.disabled = true;
                 processButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processando...';
                 
-                // Simulate progress (in a real app, you would use actual upload/progress events)
+                // Simulate progress while the form submits
                 let progress = 0;
                 const interval = setInterval(() => {
                     progress += Math.random() * 10;
-                    if (progress > 100) progress = 100;
+                    if (progress > 90) progress = 90; // Don't complete until actual processing is done
                     
                     progressBar.style.width = progress + '%';
                     progressText.textContent = 'Processando: ' + Math.round(progress) + '%';
-                    
-                    if (progress === 100) {
-                        clearInterval(interval);
-                        progressText.textContent = 'Processamento concluído!';
-                        
-                        // In a real application, you would submit the form here
-                        // form.submit();
-                        
-                        // For demo purposes, we'll reset after a delay
-                        setTimeout(() => {
-                            progressContainer.style.display = 'none';
-                            progressBar.style.width = '0%';
-                            processButton.disabled = false;
-                            processButton.innerHTML = '<i class="bi bi-magic"></i> Processar e Baixar';
-                            
-                            // Show success message (you can remove this in production)
-                            alert('Arquivo processado com sucesso! (esta é uma demonstração)');
-                        }, 1500);
-                    }
                 }, 300);
+                
+                // The form will submit normally and the page will refresh with the download
+                // The interval will be cleared when the page unloads
             });
         });
     </script>
