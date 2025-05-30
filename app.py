@@ -32,7 +32,7 @@ def separar_num_letra(texto):
 def index():
     if request.method == 'POST':
         arquivo = request.files.get('file')
-        caracteres = request.form.get('caracteres', r'[.,;:!?@#$%^&*_+=|\\/<>\[\]{}()\-"\'`~]')
+        caracteres = request.form.get('caracteres', '.,;:!?@#$%^&*_+=|\\/<>[]{}()-\'"`~')
         minusculo = request.form.get('minusculo') == 'on'
         remover_especiais = request.form.get('remover_especiais') == 'on'
 
@@ -67,8 +67,12 @@ def index():
                     df[col] = df[col].str.lower()
 
                 if remover_especiais:
+                    # Escapar caracteres especiais para regex
+                    caracteres_escapados = re.escape(caracteres)
+                    # Criar padrão regex seguro
+                    padrao_regex = f'[{caracteres_escapados}]'
+                    df[col] = df[col].apply(lambda x: re.sub(padrao_regex, ' ', x))
                     df[col] = df[col].apply(remover_acentos)
-                    df[col] = df[col].apply(lambda x: re.sub(caracteres, ' ', x))
 
                 df[col] = df[col].apply(separar_num_letra)
                 df[col] = df[col].str.replace(r'\s+', ' ', regex=True).str.strip()
@@ -89,3 +93,6 @@ def index():
 @app.errorhandler(413)
 def too_large(e):
     return "Erro: o arquivo excede o tamanho máximo permitido (10 MB).", 413
+
+if __name__ == '__main__':
+    app.run(debug=True)
