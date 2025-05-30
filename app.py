@@ -35,6 +35,7 @@ def index():
         caracteres = request.form.get('caracteres', '.,;:!?@#$%^&*_+=|\\/<>[]{}()-\'"`~')
         minusculo = request.form.get('minusculo') == 'on'
         remover_especiais = request.form.get('remover_especiais') == 'on'
+        remover_espacos = request.form.get('remover_espacos') == 'on'
 
         if not arquivo or not eh_arquivo_valido(arquivo):
             return "Erro: apenas arquivos .xlsx válidos são permitidos.", 400
@@ -67,15 +68,15 @@ def index():
                     df[col] = df[col].str.lower()
 
                 if remover_especiais:
-                    # Escapar caracteres especiais para regex
                     caracteres_escapados = re.escape(caracteres)
-                    # Criar padrão regex seguro
                     padrao_regex = f'[{caracteres_escapados}]'
                     df[col] = df[col].apply(lambda x: re.sub(padrao_regex, ' ', x))
                     df[col] = df[col].apply(remover_acentos)
 
                 df[col] = df[col].apply(separar_num_letra)
-                df[col] = df[col].str.replace(r'\s+', ' ', regex=True).str.strip()
+                
+                if remover_espacos:
+                    df[col] = df[col].str.replace(r'\s+', ' ', regex=True).str.strip()
 
         output = BytesIO()
         df.to_excel(output, index=False)
