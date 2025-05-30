@@ -8,8 +8,15 @@ from io import BytesIO
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # Limite: 10 MB
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10 MB
+
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+ALLOWED_EXTENSIONS = {'xlsx'}
+
+def eh_arquivo_valido(arquivo):
+    filename = secure_filename(arquivo.filename)
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def remover_acentos(texto):
     texto = unicodedata.normalize('NFKD', texto)
@@ -28,12 +35,14 @@ def index():
         minusculo = request.form.get('minusculo') == 'on'
         remover_especiais = request.form.get('remover_especiais') == 'on'
 
-        if not arquivo:
-            return "Nenhum arquivo enviado", 400
+        if not arquivo or not eh_arquivo_valido(arquivo):
+            return "Erro: apenas arquivos .xlsx válidos são permitidos.", 400
 
-        # Lê o conteúdo do arquivo para evitar erro de leitura
-        arquivo_bytes = arquivo.read()
-        df = pd.read_excel(BytesIO(arquivo_bytes))
+        try:
+            arquivo_bytes = arquivo.read()
+            df = pd.read_excel(BytesIO(arquivo_bytes))
+        except Exception as e:
+            return f"Erro ao processar o arquivo Excel: {str(e)}", 400
 
         for col in df.columns:
             if df[col].dtype == 'object':
@@ -62,7 +71,6 @@ def index():
 
     return render_template('index.html', max_size_mb=10)
 
-# Tratamento para arquivo maior que o permitido
 @app.errorhandler(413)
 def too_large(e):
     return "Erro: o arquivo excede o tamanho máximo permitido (10 MB).", 413
