@@ -1,47 +1,22 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f7f7f7;
-  padding: 40px;
-}
+/* Adicione ao final do style.css existente */
 
-.container {
-  background: #ffffff;
-  padding: 30px;
-  max-width: 600px;
-  margin: auto;
-  border-radius: 12px;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-form label {
-  display: block;
-  margin-top: 15px;
-}
-
-input[type="text"],
-input[type="file"] {
+#progresso-container {
   width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-}
-
-button {
+  background: #eee;
+  border-radius: 6px;
   margin-top: 20px;
-  padding: 10px 20px;
-  width: 100%;
-  background-color: #2d89ef;
-  border: none;
-  color: white;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
+  overflow: hidden;
 }
 
-button:hover {
-  background-color: #1b5fac;
+#progresso-barra {
+  width: 0%;
+  height: 25px;
+  background-color: #2d89ef;
+  transition: width 0.3s;
+}
+
+#progresso-texto {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 5px;
 }
