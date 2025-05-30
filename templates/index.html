@@ -3,20 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <title>Limpeza de Dados</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <h2>Ferramenta de Limpeza de Dados</h2>
-  <form method="POST" enctype="multipart/form-data">
-    <label>Arquivo Excel:</label><br>
-    <input type="file" name="file" accept=".xlsx,.xls" required><br><br>
+  <div class="container">
+    <h1>🧹 Ferramenta de Limpeza de Dados</h1>
+    <form method="POST" enctype="multipart/form-data">
+      <label>Arquivo Excel:</label>
+      <input type="file" name="file" accept=".xlsx,.xls" required>
 
-    <input type="checkbox" name="minusculo" checked> Converter para minúsculo<br>
-    <input type="checkbox" name="remover_especiais" checked> Remover acentos e caracteres especiais<br><br>
+      <label><input type="checkbox" name="minusculo" checked> Converter para minúsculo</label>
+      <label><input type="checkbox" name="remover_especiais" checked> Remover acentos e caracteres especiais</label>
 
-    <label>Caracteres a remover (Regex):</label><br>
-    <input type="text" name="caracteres" value="[.,;:!?@#$%^&*_+=|\\/<>\[\]{}()\"\'`~]" size="80"><br><br>
+      <label>Regex de caracteres a remover:</label>
+      <input type="text" name="caracteres" value="[.,;:!?@#$%^&*_+=|\\/<>\[\]{}()\"\'`~]">
 
-    <button type="submit">Processar e Baixar</button>
-  </form>
+      <button type="submit">Processar e Baixar</button>
+    </form>
+  </div>
 </body>
 </html>
