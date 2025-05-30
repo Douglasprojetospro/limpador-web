@@ -1,45 +1,36 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Limpador de Texto Excel</title>
+    <title>Limpador de Texto</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <header class="header">
         <div class="logo">
-            <i>🧼</i>
+            <i class="fas fa-broom"></i>
             <h1>Limpador de Texto</h1>
         </div>
-        <p class="subtitle">Remova acentos, caracteres especiais e formate seus dados Excel com facilidade.</p>
+        <p class="subtitle">Remova acentos, caracteres especiais e espaços com facilidade</p>
     </header>
 
     <main class="container">
         <form method="POST" enctype="multipart/form-data">
             <div class="card">
                 <div class="card-body">
-                    <div class="card-title">
-                        <i>📂</i>
-                        <span>1. Faça o upload do seu arquivo .xlsx</span>
-                    </div>
-                    <div class="upload-area" onclick="document.getElementById('file-input').click();">
-                        <div class="upload-icon">⬆️</div>
-                        <p>Clique aqui ou arraste o arquivo para esta área</p>
-                        <input id="file-input" class="file-input" type="file" name="file" accept=".xlsx" required>
-                        <div class="file-info" id="file-info">Nenhum arquivo selecionado.</div>
-                    </div>
-                </div>
-            </div>
+                    <h5 class="card-title"><i class="fas fa-file-excel"></i> Upload de Arquivo Excel</h5>
 
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-title">
-                        <i>⚙️</i>
-                        <span>2. Escolha as opções de limpeza</span>
-                    </div>
+                    <label for="file-upload" class="upload-area">
+                        <div class="upload-icon"><i class="fas fa-upload"></i></div>
+                        <p>Arraste e solte o arquivo ou clique aqui</p>
+                        <input id="file-upload" class="file-input" type="file" name="file" required>
+                    </label>
+
+                    <div class="file-info" id="file-info"></div>
+
                     <div class="option-item">
-                        <label><input type="checkbox" name="minusculo"> Converter tudo para minúsculo</label>
+                        <label><input type="checkbox" name="minusculo"> Converter para minúsculas</label>
                     </div>
                     <div class="option-item">
                         <label><input type="checkbox" name="remover_especiais"> Remover caracteres especiais</label>
@@ -47,27 +38,42 @@
                     <div class="option-item">
                         <label><input type="checkbox" name="remover_espacos"> Remover espaços extras</label>
                     </div>
-                    <div class="option-item">
-                        <label>Caracteres a remover (caso marcado acima):</label>
-                        <input type="text" name="caracteres" value=".,;:!?@#$%^&*_+=|\\/<>[]{}()-'&quot;`~" style="width:100%;">
-                    </div>
-                </div>
-            </div>
 
-            <div style="text-align:center;">
-                <button class="btn btn-primary" type="submit">Processar Arquivo</button>
+                    <div class="option-item">
+                        <label for="caracteres">Caracteres a remover:</label>
+                        <input type="text" name="caracteres" value=".,;:!?@#$%^&*_+=|\/<>[]{}()-'&quot;`~">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Processar Arquivo</button>
+
+                    <div class="progress-container" id="progress-container">
+                        <div class="progress-text">Processando...</div>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </form>
     </main>
 
     <footer class="footer">
-        <p style="text-align: center;">&copy; {{ now.year }} Limpador Web • Desenvolvido para Render.com</p>
+        <div class="container text-center">
+            <p>&copy; 2025 Limpador de Texto - Todos os direitos reservados.</p>
+        </div>
     </footer>
 
     <script>
-        document.getElementById('file-input').addEventListener('change', function () {
-            const fileName = this.files[0] ? this.files[0].name : "Nenhum arquivo selecionado.";
-            document.getElementById('file-info').textContent = fileName;
+        const input = document.getElementById('file-upload');
+        const fileInfo = document.getElementById('file-info');
+
+        input.addEventListener('change', function () {
+            if (this.files.length > 0) {
+                fileInfo.textContent = 'Arquivo selecionado: ' + this.files[0].name;
+            } else {
+                fileInfo.textContent = '';
+            }
         });
     </script>
 </body>
