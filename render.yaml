@@ -3,3 +3,6 @@ services:
     name: streamlit-cleaner
     env: docker
     plan: free
+    region: oregon
+    branch: main
+    autoDeploy: true
