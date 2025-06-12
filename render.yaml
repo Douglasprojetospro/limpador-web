@@ -1,8 +1,9 @@
 services:
   - type: web
-    name: streamlit-cleaner
-    env: docker
-    plan: free
-    region: oregon
-    branch: main
-    autoDeploy: true
+    name: streamlit-data-cleaner
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run Categorias.py --server.port=$PORT --server.headless=true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.18
