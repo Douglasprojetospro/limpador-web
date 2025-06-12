@@ -6,7 +6,7 @@ from io import BytesIO
 
 # Configuração da página
 st.set_page_config(
-    page_title="Ferramenta de Limpeza de Dados",
+    page_title="🧹 Ferramenta de Limpeza de Dados",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -16,11 +16,9 @@ class DataCleaner:
         self.df = None
         self.space_chars = r'[.,;:!?@#$%^&*_+=|\\/<>\[\]{}()\-"\'`~]'
 
-        # Inicializa opções no estado da sessão
-        if 'to_lowercase' not in st.session_state:
-            st.session_state.to_lowercase = True
-        if 'remove_special' not in st.session_state:
-            st.session_state.remove_special = True
+        # Configuração de estado da sessão
+        st.session_state.setdefault('to_lowercase', True)
+        st.session_state.setdefault('remove_special', True)
 
     def remove_accents(self, text):
         """Remove acentos e converte ç/Ç para c/C"""
@@ -39,7 +37,7 @@ class DataCleaner:
         return text
 
     def clean_dataframe(self):
-        """Aplica todas as limpezas configuradas ao dataframe"""
+        """Processa o DataFrame com as configurações selecionadas"""
         if self.df is None:
             st.warning("Nenhum arquivo carregado.")
             return None
@@ -49,7 +47,7 @@ class DataCleaner:
         total_cols = len(cleaned_df.columns)
 
         for i, col in enumerate(cleaned_df.columns):
-            if cleaned_df[col].dtype == 'object':
+            if cleaned_df[col].dtype == 'object' or cleaned_df[col].dtype == 'string':
                 cleaned_df[col] = cleaned_df[col].astype(str)
 
                 if st.session_state.to_lowercase:
@@ -80,9 +78,10 @@ def main():
     st.title("🧹 Ferramenta de Limpeza de Dados")
     cleaner = DataCleaner()
 
-    # SIDEBAR – Configurações
+    # Sidebar – configurações
     with st.sidebar:
         st.header("⚙️ Configurações de Limpeza")
+
         st.session_state.to_lowercase = st.checkbox(
             "Converter texto para minúsculo",
             value=st.session_state.to_lowercase
@@ -98,40 +97,40 @@ def main():
             value=cleaner.space_chars
         )
 
-    # TABS – Upload e visualização
+    # Tabs – upload e visualização
     tab1, tab2 = st.tabs(["📤 Carregar Arquivo", "📊 Visualizar Dados"])
 
-    # Aba de upload
     with tab1:
-        st.header("Carregar Arquivo Excel")
+        st.header("Upload de Arquivo Excel")
         uploaded_file = st.file_uploader(
-            "Selecione o arquivo Excel",
-            type=["xlsx", "xls"],
-            key="file_uploader"
+            "Selecione um arquivo Excel (.xlsx ou .xls)",
+            type=["xlsx", "xls"]
         )
 
         if uploaded_file:
             try:
                 cleaner.df = pd.read_excel(uploaded_file)
-                st.session_state.original_df = cleaner.df.copy()
-                st.success(f"✅ Arquivo carregado! ({len(cleaner.df)} registros)")
-                st.subheader("Pré-visualização")
-                st.dataframe(cleaner.df.head())
+                if cleaner.df.empty:
+                    st.warning("O arquivo está vazio.")
+                else:
+                    st.session_state.original_df = cleaner.df.copy()
+                    st.success(f"✅ Arquivo carregado com sucesso ({len(cleaner.df)} registros).")
+                    st.subheader("Pré-visualização dos dados")
+                    st.dataframe(cleaner.df.head())
             except Exception as e:
-                st.error(f"Erro ao carregar arquivo: {str(e)}")
+                st.error(f"Erro ao carregar o arquivo: {str(e)}")
 
-    # Aba de visualização e processamento
     with tab2:
         if 'original_df' in st.session_state:
             cleaner.df = st.session_state.original_df
             st.header("Dados Processados")
 
-            if st.button("Processar Dados", type="primary"):
-                with st.spinner("Processando dados..."):
+            if st.button("🔄 Processar Dados", type="primary"):
+                with st.spinner("Processando..."):
                     cleaned_df = cleaner.clean_dataframe()
                     if cleaned_df is not None:
                         st.session_state.cleaned_df = cleaned_df
-                        st.success("✅ Dados processados com sucesso!")
+                        st.success("✅ Processamento concluído!")
                         st.rerun()
 
         if 'cleaned_df' in st.session_state and st.session_state.cleaned_df is not None:
@@ -142,19 +141,18 @@ def main():
             col1, col2, col3 = st.columns([1, 2, 1])
             with col2:
                 st.download_button(
-                    label="⬇️ BAIXAR DADOS TRATADOS (Excel)",
+                    label="⬇️ Baixar dados tratados (Excel)",
                     data=cleaner.to_excel(st.session_state.cleaned_df),
                     file_name="dados_processados.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    use_container_width=True,
-                    type="primary"
+                    use_container_width=True
                 )
             st.markdown("---")
 
-            with st.expander("🔍 Visualizar mais dados processados"):
+            with st.expander("🔍 Visualizar mais dados"):
                 st.dataframe(st.session_state.cleaned_df)
         else:
-            st.warning("Nenhum dado processado disponível. Carregue e processe um arquivo.")
+            st.info("Carregue um arquivo e clique em 'Processar Dados' para visualizar o resultado.")
 
 if __name__ == "__main__":
     main()
