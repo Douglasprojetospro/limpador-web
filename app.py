@@ -1,97 +1,158 @@
-import os
+import streamlit as st
+import pandas as pd
 import re
 import unicodedata
-import pandas as pd
-from flask import Flask, request, render_template, send_file
-from werkzeug.utils import secure_filename
 from io import BytesIO
-from openpyxl import load_workbook
 
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10 MB
+# Configuração da página
+st.set_page_config(
+    page_title="Ferramenta de Limpeza de Dados",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+class DataCleaner:
+    def __init__(self):
+        self.df = None
+        self.space_chars = r'[.,;:!?@#$%^&*_+=|\\/<>\[\]{}()\-"\'`~]'
+        
+        # Configurações padrão
+        if 'to_lowercase' not in st.session_state:
+            st.session_state.to_lowercase = True
+        if 'remove_special' not in st.session_state:
+            st.session_state.remove_special = True
 
-ALLOWED_EXTENSIONS = {'xlsx'}
+    def remove_accents(self, text):
+        """Remove acentos e caracteres especiais de um texto"""
+        text = unicodedata.normalize('NFKD', str(text))
+        text = ''.join(c for c in text if not unicodedata.combining(c))
+        return text.replace('ç', 'c').replace('Ç', 'C')
 
-def eh_arquivo_valido(arquivo):
-    filename = secure_filename(arquivo.filename)
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    def separate_num_letter(self, text):
+        """Adiciona espaço entre números e letras"""
+        text = re.sub(r'(?<=\d)(?=[a-zA-Z])', ' ', str(text))
+        text = re.sub(r'(?<=[a-zA-Z])(?=\d)', ' ', text)
+        return text
 
-def remover_acentos(texto):
-    texto = unicodedata.normalize('NFKD', texto)
-    return ''.join(c for c in texto if not unicodedata.combining(c)).replace('ç', 'c').replace('Ç', 'C')
+    def clean_dataframe(self):
+        """Processa o dataframe com as configurações selecionadas"""
+        if self.df is None:
+            st.warning("Nenhum arquivo carregado")
+            return None
 
-def separar_num_letra(texto):
-    texto = re.sub(r'(?<=\d)(?=[a-zA-Z])', ' ', texto)
-    texto = re.sub(r'(?<=[a-zA-Z])(?=\d)', ' ', texto)
-    return texto
+        cleaned_df = self.df.copy()
+        progress_bar = st.progress(0)
+        total_cols = len(cleaned_df.columns)
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        arquivo = request.files.get('file')
-        caracteres = request.form.get('caracteres', '.,;:!?@#$%^&*_+=|\\/<>[]{}()-\'"`~')
-        minusculo = request.form.get('minusculo') == 'on'
-        remover_especiais = request.form.get('remover_especiais') == 'on'
-        remover_espacos = request.form.get('remover_espacos') == 'on'
+        for i, col in enumerate(cleaned_df.columns):
+            if cleaned_df[col].dtype == 'object':
+                cleaned_df[col] = cleaned_df[col].astype(str)
 
-        if not arquivo or not eh_arquivo_valido(arquivo):
-            return "Erro: apenas arquivos .xlsx válidos são permitidos.", 400
+                if st.session_state.to_lowercase:
+                    cleaned_df[col] = cleaned_df[col].str.lower()
 
-        try:
-            arquivo_bytes = arquivo.read()
-            wb = load_workbook(filename=BytesIO(arquivo_bytes), read_only=True)
-            ws = wb.active
+                if st.session_state.remove_special:
+                    cleaned_df[col] = cleaned_df[col].apply(self.remove_accents)
+                    cleaned_df[col] = cleaned_df[col].apply(
+                        lambda x: re.sub(self.space_chars, ' ', x)
+                    )
 
-            data = []
-            for i, row in enumerate(ws.iter_rows(values_only=True)):
-                if i == 0:
-                    header = list(row)
-                else:
-                    data.append(list(row))
-                if i >= 1000:
-                    break
+                cleaned_df[col] = cleaned_df[col].apply(self.separate_num_letter)
+                cleaned_df[col] = cleaned_df[col].str.replace(r'\s+', ' ', regex=True).str.strip()
 
-            df = pd.DataFrame(data, columns=header)
+            progress_bar.progress((i + 1) / total_cols)
 
-        except Exception as e:
-            return f"Erro ao ler o arquivo Excel: {str(e)}", 400
+        progress_bar.empty()
+        return cleaned_df
 
-        for col in df.columns:
-            if df[col].dtype == 'object':
-                df[col] = df[col].astype(str)
-
-                if minusculo:
-                    df[col] = df[col].str.lower()
-
-                if remover_especiais:
-                    padrao_regex = f"[{''.join(re.escape(c) for c in caracteres)}]"
-                    df[col] = df[col].apply(lambda x: re.sub(padrao_regex, ' ', x))
-                    df[col] = df[col].apply(remover_acentos)
-
-                df[col] = df[col].apply(separar_num_letra)
-
-                if remover_espacos:
-                    df[col] = df[col].str.replace(r'\s+', ' ', regex=True).str.strip()
-
+    def to_excel(self, df):
+        """Converte o dataframe para Excel em memória"""
         output = BytesIO()
-        df.to_excel(output, index=False)
-        output.seek(0)
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False)
+        return output.getvalue()
 
-        return send_file(
-            output,
-            as_attachment=True,
-            download_name='dados_processados.xlsx',
-            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+def main():
+    st.title("🧹 Ferramenta de Limpeza de Dados")
+    cleaner = DataCleaner()
+
+    # Sidebar com configurações
+    with st.sidebar:
+        st.header("⚙️ Configurações")
+
+        st.session_state.to_lowercase = st.checkbox(
+            "Converter texto para minúsculo",
+            value=st.session_state.to_lowercase
         )
 
-    return render_template('index.html', max_size_mb=10)
+        st.session_state.remove_special = st.checkbox(
+            "Remover caracteres especiais e acentos",
+            value=st.session_state.remove_special
+        )
 
-@app.errorhandler(413)
-def too_large(e):
-    return "Erro: o arquivo excede o tamanho máximo permitido (10 MB).", 413
+        cleaner.space_chars = st.text_input(
+            "Caracteres para substituir por espaço:",
+            value=cleaner.space_chars
+        )
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    # Seção principal
+    tab1, tab2 = st.tabs(["📤 Carregar Arquivo", "📊 Visualizar Dados"])
+
+    with tab1:
+        st.header("Carregar Arquivo Excel")
+        uploaded_file = st.file_uploader(
+            "Selecione o arquivo Excel",
+            type=["xlsx", "xls"],
+            key="file_uploader"
+        )
+
+        if uploaded_file:
+            try:
+                cleaner.df = pd.read_excel(uploaded_file)
+                st.session_state.original_df = cleaner.df.copy()
+                st.success(f"✅ Arquivo carregado com sucesso! ({len(cleaner.df)} registros)")
+                st.subheader("Pré-visualização dos dados originais")
+                st.dataframe(cleaner.df.head())
+            except Exception as e:
+                st.error(f"Erro ao carregar arquivo: {str(e)}")
+
+    with tab2:
+        if 'original_df' in st.session_state:
+            cleaner.df = st.session_state.original_df
+            st.header("Dados Processados")
+
+            if st.button("Processar Dados", type="primary"):
+                with st.spinner("Processando dados..."):
+                    cleaned_df = cleaner.clean_dataframe()
+                    if cleaned_df is not None:
+                        st.session_state.cleaned_df = cleaned_df
+                        st.success("Processamento concluído!")
+                        st.rerun()
+
+        if 'cleaned_df' in st.session_state and st.session_state.cleaned_df is not None:
+            st.subheader("Resultado do Processamento")
+            st.dataframe(st.session_state.cleaned_df.head())
+
+            # Container para o botão de download
+            with st.container():
+                st.markdown("---")
+                col1, col2, col3 = st.columns([1,2,1])
+                with col2:
+                    st.download_button(
+                        label="⬇️ BAIXAR DADOS TRATADOS (Excel)",
+                        data=cleaner.to_excel(st.session_state.cleaned_df),
+                        file_name="dados_processados.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        use_container_width=True,
+                        type="primary"
+                    )
+                st.markdown("---")
+            
+            # Visualização expandida
+            with st.expander("🔍 Visualizar mais dados processados"):
+                st.dataframe(st.session_state.cleaned_df)
+        else:
+            st.warning("Nenhum dado processado disponível. Carregue e processe um arquivo.")
+
+if __name__ == "__main__":
+    main()
