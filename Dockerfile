@@ -1,15 +1,19 @@
+# Usa imagem base oficial do Python
 FROM python:3.10-slim
 
-# Instala dependências
+# Atualiza o pip
 RUN pip install --upgrade pip
-COPY requirements.txt ./
-RUN pip install -r requirements.txt
 
-# Copia o código
-COPY . /app
+# Define diretório de trabalho
 WORKDIR /app
 
-# Porta padrão do Streamlit
+# Copia arquivos para o container
+COPY . .
+
+# Instala as dependências
+RUN pip install -r requirements.txt
+
+# Expõe a porta padrão do Streamlit
 EXPOSE 8501
 
 # Comando de inicialização
