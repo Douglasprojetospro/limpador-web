@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import re
 import unicodedata
 from io import BytesIO
 
@@ -61,11 +60,10 @@ def main():
         cleaner.df = pd.read_excel(uploaded_file)
         st.success(f"✅ {len(cleaner.df)} registros carregados")
 
-        if st.button("🔁 Processar Dados", type="primary"):
+        if st.button("🔁 Processar Dados"):
             with st.spinner("Processando..."):
                 cleaned_df = cleaner.clean_dataframe(lowercase, remove_special)
                 st.session_state.cleaned_df = cleaned_df
-                st.rerun()
 
     # Resultado
     if 'cleaned_df' in st.session_state:
